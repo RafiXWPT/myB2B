@@ -31,7 +31,7 @@ namespace myB2B.Web.Infrastructure.Actions.Commands
 
         public async Task ExecuteAsync<TCommand>(TCommand command) where TCommand : Command
         {
-            var handler = _serviceProvider.GetService(typeof(ICommandHandler<TCommand>)) as ICommandHandler<TCommand>;
+            var handler = _serviceProvider.GetService(typeof(IAsyncCommandHandler<TCommand>)) as IAsyncCommandHandler<TCommand>;
             if (handler == null)
             {
                 throw new CommandHandlerNotFoundException(typeof(TCommand), true);

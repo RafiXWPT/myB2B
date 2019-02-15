@@ -21,6 +21,21 @@ namespace myB2B.Web.Infrastructure.Actions.Commands.Decorators
             _inner.Execute(command);
         }
 
+        protected void LogCommand(TCommand command)
+        {
+
+        }
+    }
+
+    public class AsyncCommandHandlerLogDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
+    {
+        private readonly IAsyncCommandHandler<TCommand> _inner;
+
+        public AsyncCommandHandlerLogDecorator(IAsyncCommandHandler<TCommand> inner)
+        {
+            _inner = inner;
+        }
+
         public async Task ExecuteAsync(TCommand command)
         {
             LogCommand(command);

@@ -15,3 +15,7 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: 'drop' 
+    targetPath: $(Build.ArtifactStagingDirectory)

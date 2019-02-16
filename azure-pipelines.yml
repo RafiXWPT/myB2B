@@ -4,22 +4,22 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+- test
 
 pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  buildConfiguration: 'Debug'
+  buildConfiguration: 'Release'
 
 steps:
 - script: dotnet publish --configuration $(buildConfiguration)
   displayName: 'dotnet publish $(buildConfiguration)'
 - task: CopyFiles@2
   inputs:
-    contents: '$(Build.Repository.LocalPath)/myB2B.Web/bin/Debug/netcoreapp2.2/publish/**'
+    contents: '$(Build.Repository.LocalPath)/myB2B.Web/bin/Release/netcoreapp2.2/publish/**'
     targetFolder: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1
   inputs:
-    artifactName: 'dev-artifact'
+    artifactName: 'test-artifact'
     targetPath: $(Build.ArtifactStagingDirectory)

@@ -17,7 +17,7 @@ steps:
   displayName: 'dotnet publish $(buildConfiguration)'
 - task: CopyFiles@2
   inputs:
-    contents: '$(Build.Repository.LocalPath)/myB2B.Web/bin/Release/netcoreapp2.2/publish/**,!(main.*.css*|main.*.js*|service.worker.js)'
+    contents: '$(Build.Repository.LocalPath)/myB2B.Web/bin/Release/netcoreapp2.2/publish/**'
     targetFolder: $(Build.ArtifactStagingDirectory)
 - task: PublishPipelineArtifact@0
   inputs:

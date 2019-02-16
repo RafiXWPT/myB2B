@@ -13,8 +13,8 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- script: dotnet publish --configuration $(buildConfiguration)
+  displayName: 'dotnet publish $(buildConfiguration)'
 - task: PublishPipelineArtifact@0
   inputs:
     artifactName: 'master-artifact' 

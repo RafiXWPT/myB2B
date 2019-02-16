@@ -19,8 +19,4 @@ steps:
   inputs:
     contents: '$(Build.Repository.LocalPath)/myB2B.Web/bin/Release/netcoreapp2.2/publish/**'
     targetFolder: $(Build.ArtifactStagingDirectory)
-- task: PublishPipelineArtifact@0
-  inputs:
-    artifactName: 'master-artifact' 
-    targetPath: $(Build.ArtifactStagingDirectory)
     

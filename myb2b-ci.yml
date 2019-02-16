@@ -19,3 +19,7 @@ steps:
   inputs:
     artifactName: 'master-artifact' 
     targetPath: $(Build.ArtifactStagingDirectory)
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: 'master-artifact'
+    pathtoPublish: $(Build.ArtifactStagingDirectory)

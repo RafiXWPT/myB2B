@@ -17,5 +17,5 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - task: PublishPipelineArtifact@0
   inputs:
-    artifactName: 'drop' 
+    artifactName: 'master-artifact' 
     targetPath: $(Build.ArtifactStagingDirectory)

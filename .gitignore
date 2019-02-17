@@ -15,6 +15,7 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+ClientApp/
 x64/
 x86/
 bld/
@@ -259,3 +260,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/myB2B.Web/ClientApp/package-lock.json

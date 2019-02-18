@@ -7,11 +7,8 @@ trigger:
 - master
 
 pool:
-  vmImage: 'Ubuntu-16.04'
-
-variables:
-  buildConfiguration: 'Debug'
+  vmImage: 'ubuntu-16.04'
 
 steps:
-- script: dotnet publish --configuration $(buildConfiguration)
-  displayName: 'dotnet publish $(buildConfiguration)'
+- powershell: dotnet build --configuration Debug
+  displayName: 'CI Build'

@@ -8,7 +8,8 @@ pool:
 
 variables:
 - group: dev-deploy-configuration
-  buildConfiguration: 'Debug'
+- name: buildConfiguration
+  value: 'Debug'
 
 steps:
 - powershell: dotnet publish myB2B.Web/myB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$env:MS_DEPLOY_SERVICE_URL /p:DeployIisAppPath=$env:DEPLOY_IIS_APP_PATH /p:UserName=$env:USER_NAME /p:Password=$env:PASSWORD /p:PublishProfile=Default --configuration $(buildConfiguration)

@@ -7,15 +7,8 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-- group: dev-deploy-configuration
-- name: buildConfiguration
-  value: 'Debug'
+  buildConfiguration: 'Debug'
 
 steps:
-- powershell: dotnet publish myB2B.Web/myB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL="$env:MS_DEPLOY_SERVICE_URL" /p:DeployIisAppPath="$env:DEPLOY_IIS_APP_PATH" /p:UserName="$env:USER_NAME" /p:Password="$env:PASSWORD" /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration $(buildConfiguration)
-  env:
-    MS_DEPLOY_SERVICE_URL: $(DEVDeploySite)
-    DEPLOY_IIS_APP_PATH: $(DEVPublishUrl)
-    USER_NAME: $(DEVUser)
-    PASSWORD: $(DEVPassword)
+- powershell: dotnet publish myB2B.Web/myB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$(publish.url) /p:DeployIisAppPath=$(deploy.site) /p:UserName=$(deploy.user) /p:Password=$(deploy.password) /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration $(buildConfiguration)
   displayName: 'dotnet publish $(buildConfiguration)'

@@ -1,0 +1,20 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+- group: dev-deploy-configuration
+  buildConfiguration: 'Debug'
+
+steps:
+- powershell: dotnet publish myB2B.Web/myB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$env:MS_DEPLOY_SERVICE_URL /p:DeployIisAppPath=$env:DEPLOY_IIS_APP_PATH /p:UserName=$env:USER_NAME /p:Password=$env:PASSWORD /p:PublishProfile=Default --configuration $(buildConfiguration)
+  env:
+    MS_DEPLOY_SERVICE_URL: $(DEVDeploySite)
+    DEPLOY_IIS_APP_PATH: $(DEVPublishUrl)
+    USER_NAME: $(DEVUser)
+    PASSWORD: $(DEVPassword)
+  displayName: 'dotnet publish $(buildConfiguration)'

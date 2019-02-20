@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace myB2B.Domain
+namespace myB2B.Domain.Company
 {
     public class Company : AuditableImmutableEntity
     {

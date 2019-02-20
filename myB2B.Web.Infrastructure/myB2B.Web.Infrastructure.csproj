@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\myB2B.Domain.EntityFramework\myB2B.Domain.EntityFramework.csproj" />
+    <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

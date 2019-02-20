@@ -13,5 +13,5 @@ variables:
   buildConfiguration: 'Debug'
 
 steps:
-- powershell: dotnet publish myB2B.Web/myB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$(publish.url) /p:DeployIisAppPath=$(deploy.site) /p:UserName=$(deploy.user) /p:Password=$(deploy.password) /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration $(buildConfiguration)
+- powershell: dotnet publish MyB2B.Web/MyB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$(publish.url) /p:DeployIisAppPath=$(deploy.site) /p:UserName=$(deploy.user) /p:Password=$(deploy.password) /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration $(buildConfiguration)
   displayName: 'dotnet publish --configuration $(buildConfiguration) DEV'

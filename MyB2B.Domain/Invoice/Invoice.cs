@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace myB2B.Domain
+namespace myB2B.Domain.Invoice
 {
     public class Invoice : AuditableImmutableEntity
     {

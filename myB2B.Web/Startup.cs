@@ -40,12 +40,9 @@ namespace myB2B.Web
                 app.UseHsts();
             }
 
-            if (Configuration.GetValue<bool>("EntityFrameworkConfiguration:CreateDatabase"))
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-                {
-                    serviceScope.ServiceProvider.GetRequiredService<MyB2BContext>().Database.EnsureCreated();
-                }
+                serviceScope.ServiceProvider.GetRequiredService<MyB2BContext>().Database.Migrate();
             }
 
             app.UseHttpsRedirection();

@@ -1,4 +1,4 @@
-namespace myB2B.Domain
+namespace myB2B.Domain.Invoice
 {
     public enum InvoiceStatus
     {

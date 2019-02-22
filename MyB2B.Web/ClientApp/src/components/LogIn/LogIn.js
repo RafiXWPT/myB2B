@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import '../../../node_modules/react-notifications/lib/notifications.css';
+import './notifications.css';
 import "./LogIn.css";
 
 export class LogIn extends Component {

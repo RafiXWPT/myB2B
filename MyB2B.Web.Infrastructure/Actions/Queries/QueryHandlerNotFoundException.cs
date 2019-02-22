@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace myB2B.Web.Infrastructure.Actions.Queries
+namespace MyB2B.Web.Infrastructure.Actions.Queries
 {
     [Serializable]
     public class QueryHandlerNotFoundException : Exception

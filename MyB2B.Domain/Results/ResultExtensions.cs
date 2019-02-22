@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace myB2B.Domain.Results
+namespace MyB2B.Domain.Results
 {
     public static class ResultExtensions
     {

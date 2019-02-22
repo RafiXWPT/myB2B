@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Commands.Decorators
+namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
 {
     public class CommandHandlerProfileDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : Command
     {
@@ -28,12 +25,12 @@ namespace myB2B.Web.Infrastructure.Actions.Commands.Decorators
         }
     }
 
-    public class AsyncCommandhandlerProfileDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
+    public class AsyncCommandHandlerProfileDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
     {
         private readonly IAsyncCommandHandler<TCommand> _inner;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
-        public AsyncCommandhandlerProfileDecorator(IAsyncCommandHandler<TCommand> inner)
+        public AsyncCommandHandlerProfileDecorator(IAsyncCommandHandler<TCommand> inner)
         {
             _inner = inner;
         }

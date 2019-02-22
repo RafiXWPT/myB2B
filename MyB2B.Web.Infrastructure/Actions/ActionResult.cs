@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace myB2B.Web.Infrastructure.Actions
+﻿namespace MyB2B.Web.Infrastructure.Actions
 {
     public class ActionResult<T> where T: class
     {

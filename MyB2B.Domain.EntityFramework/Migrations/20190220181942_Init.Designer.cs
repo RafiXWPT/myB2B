@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace myB2B.Domain.EntityFramework.Migrations
+namespace MyB2B.Domain.EntityFramework.Migrations
 {
     [DbContext(typeof(MyB2BContext))]
     [Migration("20190220181942_Init")]

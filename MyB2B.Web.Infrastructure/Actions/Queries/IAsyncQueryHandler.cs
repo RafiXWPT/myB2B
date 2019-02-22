@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Queries
+namespace MyB2B.Web.Infrastructure.Actions.Queries
 {
     public interface IAsyncQueryHandler<in TQuery, TResult>
         where TQuery : Query<TResult>

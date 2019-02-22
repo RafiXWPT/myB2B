@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace myB2B.Domain.Company
+namespace MyB2B.Domain.Company
 {
     public class CompanyProduct : AuditableImmutableEntity
     {

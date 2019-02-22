@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Commands.Decorators
+namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
 {
     public class CommandHandlerLogDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : Command
     {

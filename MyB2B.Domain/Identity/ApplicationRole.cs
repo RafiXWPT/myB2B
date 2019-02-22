@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace myB2B.Domain.Identity
+namespace MyB2B.Domain.Identity
 {
     public class ApplicationRole : ApplicationEntity
     {

@@ -38,7 +38,10 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-                </NavItem>
+                            </NavItem>
+        <NavItem>
+        <NavLink tag={Link} className="text-dark" to="/log-in">Log-in</NavLink>
+        </NavItem>
               </ul>
             </Collapse>
           </Container>

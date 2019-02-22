@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Commands
+namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
     public interface IAsyncCommandHandler<in TCommand>
         where TCommand : Command

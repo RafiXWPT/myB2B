@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace myB2B.Web.Infrastructure.Actions.Commands
+namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
     [Serializable]
     public class CommandHandlerNotFoundException : Exception

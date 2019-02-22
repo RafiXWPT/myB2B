@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Queries.Decorators
+namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
 {
     public class QueryHandlerProfilerDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult> 
         where TQuery : Query<TResult>

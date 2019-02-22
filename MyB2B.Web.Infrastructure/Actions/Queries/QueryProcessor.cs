@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace myB2B.Web.Infrastructure.Actions.Queries
+namespace MyB2B.Web.Infrastructure.Actions.Queries
 {
     public interface IQueryProcessor
     {
-        TResult Query<TResult>(Query<TResult> query);
+        ActionResult<TResult> Query<TResult>(Query<TResult> query) where TResult: class;
 
-        Task<TResult> QueryAsync<TResult>(Query<TResult> query);
+        Task<ActionResult<TResult>> QueryAsync<TResult>(Query<TResult> query) where TResult: class;
     }
 
     public class QueryProcessor : IQueryProcessor
@@ -21,7 +19,7 @@ namespace myB2B.Web.Infrastructure.Actions.Queries
             _serviceProvider = serviceProvider;
         }
 
-        public TResult Query<TResult>(Query<TResult> query)
+        public ActionResult<TResult> Query<TResult>(Query<TResult> query) where TResult: class
         {
             var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
             dynamic handler = _serviceProvider.GetService(handlerType);
@@ -32,7 +30,7 @@ namespace myB2B.Web.Infrastructure.Actions.Queries
             return handler.Query((dynamic)query);
         }
 
-        public async Task<TResult> QueryAsync<TResult>(Query<TResult> query)
+        public async Task<ActionResult<TResult>> QueryAsync<TResult>(Query<TResult> query) where TResult : class
         {
             var handlerType = typeof(IAsyncQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
             dynamic handler = _serviceProvider.GetService(handlerType);

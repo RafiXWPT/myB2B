@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace myB2B.Domain
+namespace MyB2B.Domain
 {
     public class Address : ApplicationEntity
     {

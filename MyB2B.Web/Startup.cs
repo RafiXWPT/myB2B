@@ -1,13 +1,30 @@
-using myB2B.Domain.EntityFramework;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using MyB2B.Domain.EntityFramework;
+using MyB2B.Web.Infrastructure.Actions.Commands;
+using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
+using MyB2B.Web.Infrastructure.Actions.Queries;
+using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
+using MyB2B.Web.Infrastructure.Authorization.UserService;
+using SimpleInjector;
+using SimpleInjector.Integration.AspNetCore.Mvc;
+using SimpleInjector.Lifestyles;
 
-namespace myB2B.Web
+namespace MyB2B.Web
 {
     public class Startup
     {
@@ -17,19 +34,53 @@ namespace myB2B.Web
         }
 
         private IConfiguration Configuration { get; }
+        private Container Container { get; } = new Container();
+        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
 
-        public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString");
-            services.AddDbContext<MyB2BContext>(opt => opt.UseSqlServer(connectionString));
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            IntegrateSimpleInjector(services);
+            RegisterDependencies();
+
+            var serverSecurityTokenSecret = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Security:Token:Secret"));
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(token =>
+            {
+                token.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                        var userId = -1;
+                        var user = userService.GetById(userId);
+                        if (user == null) context.Fail("Not existing");
+                        return Task.CompletedTask;
+                    }
+                };
+                token.RequireHttpsMetadata = false;
+                token.SaveToken = true;
+                token.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(serverSecurityTokenSecret),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+               
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            InitializeContainer(app);
+            Container.Verify();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -40,16 +91,16 @@ namespace myB2B.Web
                 app.UseHsts();
             }
 
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (AsyncScopedLifestyle.BeginScope(Container))
             {
-                serviceScope.ServiceProvider.GetRequiredService<MyB2BContext>().Database.Migrate();
+                Container.GetService<MyB2BContext>().Database.Migrate();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -67,6 +118,79 @@ namespace myB2B.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private void IntegrateSimpleInjector(IServiceCollection services)
+        {
+            Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+
+            Container.RegisterInstance<IServiceProvider>(Container);
+            Container.RegisterInstance<IConfiguration>(Configuration);
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(Container));
+            services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(Container));
+
+            services.EnableSimpleInjectorCrossWiring(Container);
+            services.UseSimpleInjectorAspNetRequestScoping(Container);
+        }
+
+        private void InitializeContainer(IApplicationBuilder app)
+        {
+            Container.RegisterMvcControllers(app);
+            Container.RegisterMvcViewComponents(app);
+            Container.AutoCrossWireAspNetComponents(app);
+        }
+
+        private void RegisterDependencies()
+        {
+            RegisterDbContext();
+            RegisterQueryHandlers();
+            RegisterCommandHandlers();
+            RegisterServices();
+        }
+
+        private void RegisterDbContext()
+        {
+            Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
+            Container.Register<MyB2BContext>(Lifestyle.Scoped);
+            Container.RegisterInstance<Func<MyB2BContext>>(Container.GetInstance<MyB2BContext>);
+        }
+
+        private void RegisterQueryHandlers()
+        {
+            Container.Register<IQueryProcessor, QueryProcessor>(Lifestyle.Singleton);
+
+            Container.Register(typeof(IQueryHandler<,>), ApplicationAssemblies);
+            Container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(QueryHandlerProfilerDecorator<,>));
+            Container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(QueryHandlerLogDecorator<,>));
+            Container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(QueryHandlerExceptionDecorator<,>));
+
+            Container.Register(typeof(IAsyncQueryHandler<,>), ApplicationAssemblies);
+            Container.RegisterDecorator(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerProfilerDecorator<,>));
+            Container.RegisterDecorator(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerLogDecorator<,>));
+            Container.RegisterDecorator(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerExceptionDecorator<,>));
+        }
+
+        private void RegisterCommandHandlers()
+        {
+            Container.Register<ICommandProcessor, CommandProcessor>(Lifestyle.Singleton);
+
+            Container.Register(typeof(ICommandHandler<>), ApplicationAssemblies);
+            Container.RegisterDecorator(typeof(ICommandHandler<>), typeof(CommandHandlerProfileDecorator<>));
+            Container.RegisterDecorator(typeof(ICommandHandler<>), typeof(CommandHandlerLogDecorator<>));
+            Container.RegisterDecorator(typeof(ICommandHandler<>), typeof(CommandHandlerExceptionDecorator<>));
+
+            Container.Register(typeof(IAsyncCommandHandler<>), ApplicationAssemblies);
+            Container.RegisterDecorator(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerProfileDecorator<>));
+            Container.RegisterDecorator(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerLogDecorator<>));
+            Container.RegisterDecorator(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerExceptionDecorator<>));
+        }
+
+        private void RegisterServices()
+        {
+            Container.Register<IUserService, UserService>(Lifestyle.Singleton);
         }
     }
 }

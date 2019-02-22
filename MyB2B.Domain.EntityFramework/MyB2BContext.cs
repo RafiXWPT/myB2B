@@ -1,9 +1,9 @@
-using myB2B.Domain.Company;
-using myB2B.Domain.Identity;
-using myB2B.Domain.Invoice;
 using Microsoft.EntityFrameworkCore;
+using MyB2B.Domain.Company;
+using MyB2B.Domain.Identity;
+using MyB2B.Domain.Invoice;
 
-namespace myB2B.Domain.EntityFramework
+namespace MyB2B.Domain.EntityFramework
 {
     public class MyB2BContext : DbContext
     {

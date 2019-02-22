@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace myB2B.Domain.Results
+namespace MyB2B.Domain.Results
 {
     [Serializable]
     public struct Result

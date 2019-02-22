@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace myB2B.Domain.Identity
+﻿namespace MyB2B.Domain.Identity
 {
     public class ApplicationRight : ApplicationEntity
     {

@@ -13,6 +13,7 @@ variables:
   buildConfiguration: 'Debug'
 
 steps:
+- powershell: ls -la
 - task: PowerShell@2
   inputs:
     targetType: 'filePath'

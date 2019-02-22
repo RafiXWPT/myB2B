@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Authorization\UserService\Commands\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.4.3" />
   </ItemGroup>
 

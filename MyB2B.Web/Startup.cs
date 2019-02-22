@@ -78,6 +78,7 @@ namespace MyB2B.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            InitializeContainer(app);
             Container.Verify();
 
             if (env.IsDevelopment())
@@ -137,14 +138,8 @@ namespace MyB2B.Web
 
         private void InitializeContainer(IApplicationBuilder app)
         {
-            // Add application presentation components:
             Container.RegisterMvcControllers(app);
             Container.RegisterMvcViewComponents(app);
-
-            // Add application services. For instance:
-            Container.Register<IUserService, UserService>(Lifestyle.Scoped);
-
-            // Allow Simple Injector to resolve services from ASP.NET Core.
             Container.AutoCrossWireAspNetComponents(app);
         }
 

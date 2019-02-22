@@ -17,6 +17,14 @@ namespace MyB2B.Web.Controllers
         public string Password { get; set; }
     }
 
+    public class RegisterDataDto
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+
     public abstract class BaseController : Controller
     {
         private readonly ICommandProcessor _commandProcessor;
@@ -31,14 +39,13 @@ namespace MyB2B.Web.Controllers
         protected JsonResult GetJsonResult<T>(Result<T> result)
         {
             return result.IsFail
-                ? Json(new {Success = false, ErrorMessage = result.Error})
-                : Json(new {Success = true, Result = result.Value});
+                ? Json(new {success = false, errorMessage = result.Error})
+                : Json(new {success = true, result = result.Value});
         }
     }
 
     [Authorize]
-    [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : BaseController
     {
         private readonly IUserService _userService;
@@ -53,6 +60,13 @@ namespace MyB2B.Web.Controllers
         public IActionResult Authenticate([FromBody] LoginDataDto loginData)
         {
             return GetJsonResult(_userService.Authenticate(loginData.Username, loginData.Password));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterDataDto registerData)
+        {
+            return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword));
         }
     }
 }

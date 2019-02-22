@@ -9,6 +9,7 @@ using MyB2B.Domain.Identity;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
+using MyB2B.Web.Infrastructure.Authorization.UserService.Commands;
 using MyB2B.Web.Infrastructure.Authorization.UserService.Queries;
 
 namespace MyB2B.Web.Infrastructure.Authorization.UserService
@@ -22,6 +23,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
         public const string UserLastName = "USER_LAST_NAME";
         public const string UserCompanyName = "USER_COMPANY_NAME";
         public const string UserLastLoginDate = "USER_LAST_LOG_IN_DATE";
+        public const string UserIsConfirmed = "USER_IS_CONFIRMED";
     }
 
     public class UserService : IUserService
@@ -50,40 +52,48 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
             if (!VerifyPasswordHash(password, userFromDatabase.PasswordHash, userFromDatabase.PasswordSalt))
                 return Result.Fail<AuthData>("given password is incorrect");
-           
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_serverSecurityTokenSecret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ApplicationIdentity(new[]
-                {
-                    CreateClaim(ApplicationClaimType.UserId, userFromDatabase.Id),
-                    CreateClaim(ApplicationClaimType.UserEndpointAddress, "test-localhost"),
-                    CreateClaim(ApplicationClaimType.UserCompanyName, "-"),
-                    CreateClaim(ApplicationClaimType.UserLastLoginDate, DateTime.Now.AddHours(-1))
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
 
             var authData = new AuthData
             {
                 UserId = userFromDatabase.Id,
-                Token = tokenHandler.WriteToken(token)
+                Token = GenerateAuthenticationToken(userFromDatabase)
+            };
+
+            return Result.Ok(authData);
+        }
+
+        public Result<AuthData> Register(string username, string email, string password, string confirmPassword)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+                return Result.Fail<AuthData>("Form data is incorrect");
+
+            if (password != confirmPassword)
+                return Result.Fail<AuthData>("Passwords must be the same");
+
+            var queryAction = _queryProcessor.Query(new GetUserByNameQuery(username));
+            if (queryAction.Success)
+                return Result.Fail<AuthData>("There is already user with that name");
+
+            queryAction = _queryProcessor.Query(new GetUserByEmailQuery(email));
+            if (queryAction.Success)
+                return Result.Fail<AuthData>("There is already registered account on that e-mail");
+
+            CreatePasswordHash(password, out byte[] hash, out byte[] salt);
+            var command = new CreateUserCommand(username, hash, salt, email);
+            _commandProcessor.Execute(command);
+
+            var databaseUser = command.Output.Result as ApplicationUser;
+
+            var authData = new AuthData
+            {
+                UserId = databaseUser.Id,
+                Token = GenerateAuthenticationToken(databaseUser)
             };
 
             return Result.Ok(authData);
         }
 
         public ApplicationUser GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ApplicationUser Create(ApplicationUser user)
         {
             throw new NotImplementedException();
         }
@@ -129,6 +139,27 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             }
 
             return true;
+        }
+
+        private string GenerateAuthenticationToken(ApplicationUser user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_serverSecurityTokenSecret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ApplicationIdentity(new[]
+                {
+                    CreateClaim(ApplicationClaimType.UserId, user.Id),
+                    CreateClaim(ApplicationClaimType.UserEndpointAddress, "test-localhost"),
+                    CreateClaim(ApplicationClaimType.UserCompanyName, "-"),
+                    CreateClaim(ApplicationClaimType.UserLastLoginDate, DateTime.Now.AddHours(-1)),
+                    CreateClaim(ApplicationClaimType.UserIsConfirmed, false)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
     }
 }

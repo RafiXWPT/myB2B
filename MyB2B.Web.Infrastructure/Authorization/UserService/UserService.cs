@@ -24,6 +24,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
         public const string UserCompanyName = "USER_COMPANY_NAME";
         public const string UserLastLoginDate = "USER_LAST_LOG_IN_DATE";
         public const string UserIsConfirmed = "USER_IS_CONFIRMED";
+        public const string UserAuthToken = "USER_AUTH_TOKEN";
     }
 
     public class UserService : IUserService
@@ -37,6 +38,15 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             _commandProcessor = commandProcessor;
             _queryProcessor = queryProcessor;
             _serverSecurityTokenSecret = configuration.GetValue<string>("Security:Token:Secret");
+        }
+
+        public Result<AuthData> RefreshToken(int userId)
+        {
+            var user = _queryProcessor.Query(new GetUserByIdQuery(userId));
+            if (!user.Success)
+                return Result.Fail<AuthData>("there is no user in database");
+
+            return Result.Ok(GenerateAuthData(user.Result));
         }
 
         public Result<AuthData> Authenticate(string username, string password)
@@ -53,13 +63,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             if (!VerifyPasswordHash(password, userFromDatabase.PasswordHash, userFromDatabase.PasswordSalt))
                 return Result.Fail<AuthData>("given password is incorrect");
 
-            var authData = new AuthData
-            {
-                UserId = userFromDatabase.Id,
-                Token = GenerateAuthenticationToken(userFromDatabase)
-            };
-
-            return Result.Ok(authData);
+            return Result.Ok(GenerateAuthData(userFromDatabase));
         }
 
         public Result<AuthData> Register(string username, string email, string password, string confirmPassword)
@@ -84,13 +88,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
             var databaseUser = command.Output.Result as ApplicationUser;
 
-            var authData = new AuthData
-            {
-                UserId = databaseUser.Id,
-                Token = GenerateAuthenticationToken(databaseUser)
-            };
-
-            return Result.Ok(authData);
+            return Result.Ok(GenerateAuthData(databaseUser));
         }
 
         public Result<ApplicationUser> GetById(int id)
@@ -110,6 +108,20 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
         }
 
         private static Claim CreateClaim<T>(string claimKey, T claimValue) => new Claim(claimKey, claimValue.ToString());
+
+        private AuthData GenerateAuthData(ApplicationUser user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = GenerateAuthenticationToken(tokenHandler, user);
+
+            return new AuthData
+            {
+                UserId = user.Id,
+                Token = tokenHandler.WriteToken(token),
+                ValidFrom = token.ValidFrom,
+                ValidTo = token.ValidTo
+            };
+        }
 
         private static void CreatePasswordHash(string plainPassword, out byte[] hash, out byte[] salt)
         {
@@ -142,9 +154,8 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             return true;
         }
 
-        private string GenerateAuthenticationToken(ApplicationUser user)
+        private SecurityToken GenerateAuthenticationToken(JwtSecurityTokenHandler tokenHandler, ApplicationUser user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_serverSecurityTokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -160,7 +171,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+            return tokenHandler.CreateToken(tokenDescriptor);
         }
     }
 }

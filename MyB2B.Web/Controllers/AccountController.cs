@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
+using MyB2B.Web.Infrastructure.Authorization;
 using MyB2B.Web.Infrastructure.Authorization.UserService;
 
 namespace MyB2B.Web.Controllers
@@ -30,7 +31,12 @@ namespace MyB2B.Web.Controllers
         public string Data { get; set; }
     }
 
-    public abstract class BaseController : Controller
+    public abstract class PrincipalController : Controller
+    {
+        public new ApplicationPrincipal User => new ApplicationPrincipal(base.User);
+    }
+
+    public abstract class BaseController : PrincipalController
     {
         private readonly ICommandProcessor _commandProcessor;
         private readonly IQueryProcessor _queryProcessor;
@@ -58,6 +64,23 @@ namespace MyB2B.Web.Controllers
         public AccountController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IUserService userService) : base(commandProcessor, queryProcessor)
         {
             _userService = userService;
+        }
+
+        [HttpGet("refresh-token")]
+        public IActionResult RefreshToken()
+        {
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            if (token == null)
+                return Json("");
+
+            var userToken = User.ValidateToken(token);
+            var expirationTime = userToken.ValidTo - DateTime.UtcNow;
+            if (expirationTime.TotalMinutes < 15)
+            {
+                return Json(new {ShouldRefresh = true, AuthData = _userService.RefreshToken(User.UserId).Value });
+            }
+
+            return Json(new {ShouldRefresh = false});
         }
 
         [AllowAnonymous]

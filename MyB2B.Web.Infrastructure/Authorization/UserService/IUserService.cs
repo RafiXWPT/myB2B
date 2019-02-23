@@ -5,6 +5,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 {
     public interface IUserService
     {
+        Result<AuthData> RefreshToken(int userId);
         Result<AuthData> Authenticate(string username, string password);
         Result<AuthData> Register(string username, string email, string password, string confirmPassword);
         Result<ApplicationUser> GetById(int id);

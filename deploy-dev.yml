@@ -10,13 +10,13 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  buildConfiguration: 'Debug'
+- group: 'webiosql'
 
 steps:
 - task: PowerShell@2
   inputs:
     targetType: 'filePath'
     filePath: 'deploy.ps1'
-    arguments: "-sqlconnection '$(sqlconnection)'"
-- powershell: dotnet publish MyB2B.Web/MyB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$(publish.url) /p:DeployIisAppPath=$(deploy.site) /p:UserName=$(deploy.user) /p:Password=$(deploy.password) /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration $(buildConfiguration)
-  displayName: 'dotnet publish --configuration $(buildConfiguration) DEV'
+    arguments: "-sqlconnection '$(sql.dev)'"
+- powershell: dotnet publish MyB2B.Web/MyB2B.Web.csproj /p:WebPublishMethod=MSDeploy /p:MSDeployServiceURL=$(publish.url) /p:DeployIisAppPath=$(deploy.site) /p:UserName=$(deploy.user) /p:Password=$(deploy.password) /p:PublishProfile=Default /p:AllowUntrustedCertificate=True --configuration 'Debug'
+  displayName: 'dotnet publish --configuration Debug DEV'

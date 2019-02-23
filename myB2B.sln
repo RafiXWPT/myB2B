@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{EF1F3023-F43
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{20C4A59A-F7B6-4565-BEF9-BB8E2C5B4EBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Server.Scheduler", "MyB2B.Server.Scheduler\MyB2B.Server.Scheduler.csproj", "{426BAE76-F597-4E70-BA16-5EE2442F84D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Server.Scheduler", "MyB2B.Server.Scheduler\MyB2B.Server.Scheduler.csproj", "{426BAE76-F597-4E70-BA16-5EE2442F84D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

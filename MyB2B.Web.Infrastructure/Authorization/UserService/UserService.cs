@@ -93,9 +93,10 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             return Result.Ok(authData);
         }
 
-        public ApplicationUser GetById(int id)
+        public Result<ApplicationUser> GetById(int id)
         {
-            throw new NotImplementedException();
+            var queryAction = _queryProcessor.Query(new GetUserByIdQuery(id));
+            return queryAction.Success ? Result.Ok(queryAction.Result) : Result.Fail<ApplicationUser>(queryAction.Message);
         }
 
         public void Update(ApplicationUser user)
@@ -117,8 +118,8 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
-                hash = hmac.Key;
-                salt = hmac.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
+                salt = hmac.Key;
+                hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
             }
         }
 
@@ -147,13 +148,13 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             var key = Encoding.ASCII.GetBytes(_serverSecurityTokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ApplicationIdentity(new[]
+                Subject = new ClaimsIdentity(new[]
                 {
                     CreateClaim(ApplicationClaimType.UserId, user.Id),
                     CreateClaim(ApplicationClaimType.UserEndpointAddress, "test-localhost"),
                     CreateClaim(ApplicationClaimType.UserCompanyName, "-"),
                     CreateClaim(ApplicationClaimType.UserLastLoginDate, DateTime.Now.AddHours(-1)),
-                    CreateClaim(ApplicationClaimType.UserIsConfirmed, false)
+                    CreateClaim(ApplicationClaimType.UserIsConfirmed, user.Status == UserStatus.Verified)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

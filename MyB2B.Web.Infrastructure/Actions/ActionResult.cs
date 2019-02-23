@@ -26,4 +26,17 @@
             return $"Success: {Success}, Message: {Message}, Result: {Result}";
         }
     }
+
+    public static class ActionResultExtensions
+    {
+        public static ActionResult<T> WithEmptyActionResult<T>(this T result, string message = "") where T: class
+        {
+            return result == null ? ActionResult<T>.Done() : ActionResult<T>.Fail(message);
+        }
+
+        public static ActionResult<T> WithAnyActionResult<T>(this T result, string message = "sequence is empty") where T : class
+        {
+            return result == null ? ActionResult<T>.Fail(message) : ActionResult<T>.Done(result);
+        }
+    }
 }

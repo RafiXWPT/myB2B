@@ -19,6 +19,7 @@ using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
+using MyB2B.Web.Infrastructure.Authorization;
 using MyB2B.Web.Infrastructure.Authorization.UserService;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace MyB2B.Web
         private Container Container { get; } = new Container();
         private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
 
-    public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             IntegrateSimpleInjector(services);
@@ -52,14 +53,7 @@ namespace MyB2B.Web
             {
                 token.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
-                    {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = -1;
-                        var user = userService.GetById(userId);
-                        if (user == null) context.Fail("Not existing");
-                        return Task.CompletedTask;
-                    }
+                    OnTokenValidated = OnTokenValidatedAction
                 };
                 token.RequireHttpsMetadata = false;
                 token.SaveToken = true;
@@ -74,6 +68,17 @@ namespace MyB2B.Web
                
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+        }
+
+        private async Task OnTokenValidatedAction(TokenValidatedContext context)
+        {
+            var userService = Container.GetInstance<IUserService>();
+            var applicationPrincipal = new ApplicationPrincipal(context.Principal);
+            var user = userService.GetById(applicationPrincipal.UserId);
+            if (user.IsFail)
+                context.Fail("Not existing");
+
+            await Task.CompletedTask;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

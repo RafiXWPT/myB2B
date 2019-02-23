@@ -21,6 +21,7 @@ using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
 using MyB2B.Web.Infrastructure.Authorization;
 using MyB2B.Web.Infrastructure.Authorization.UserService;
+using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
@@ -35,7 +36,7 @@ namespace MyB2B.Web
         }
 
         private IConfiguration Configuration { get; }
-        private Container Container { get; } = new Container();
+        private Container Container { get; } = DependencyContainer.Container;
         private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
 
         public void ConfigureServices(IServiceCollection services)

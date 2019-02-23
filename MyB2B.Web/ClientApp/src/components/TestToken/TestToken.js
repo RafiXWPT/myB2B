@@ -12,21 +12,17 @@ export class TestToken extends Component {
     }
 
     testGetToken = event => {
-        RequestExtensions.getWithToken('api/Account/get-test-token')
-        .then(response => response.json())
-        .then(data => {
-            var x = 0;
-        })
-        .catch(err => console.log);      
+        RequestExtensions.getWithToken('api/Account/get-test-token',
+        result => {
+            console.log(result);
+        });           
     }
 
     testPostToken = event => {
-        RequestExtensions.postWithToken('api/Account/post-test-token', JSON.stringify({data: 'X'}))
-        .then(response => response.json())
-        .then(data => {
-            var y = 0;
-        })
-        .catch(err => console.log);
+        RequestExtensions.postWithToken('api/Account/post-test-token',
+        JSON.stringify({data: 'X'}), result => {
+            console.log(result);
+        });
     }
 
     getToken = event => {

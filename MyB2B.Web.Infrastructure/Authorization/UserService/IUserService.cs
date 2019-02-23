@@ -7,7 +7,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
     {
         Result<AuthData> Authenticate(string username, string password);
         Result<AuthData> Register(string username, string email, string password, string confirmPassword);
-        ApplicationUser GetById(int id);
+        Result<ApplicationUser> GetById(int id);
         void Update(ApplicationUser user);
         void Delete(int id);
     }

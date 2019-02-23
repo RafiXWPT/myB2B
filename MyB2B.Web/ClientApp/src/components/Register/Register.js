@@ -82,7 +82,7 @@ export class Register extends Component {
           <Form.Label>Confirm Password:</Form.Label>
           <Form.Control type="password" value={this.state.confirmPassword} onChange={this.formChange} className={displaySamePasswordError ? 'samePassword' : ''} />
         </Form.Group>
-        <Button block bssize="large" disabled={!this.validateEmptyForm()} type="submit">Login</Button>
+        <Button block bssize="large" disabled={!this.validateEmptyForm()} type="submit">Register</Button>
         </form>
         <NotificationContainer/>
     </div>

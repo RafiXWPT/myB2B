@@ -25,6 +25,11 @@ namespace MyB2B.Web.Controllers
         public string ConfirmPassword { get; set; }
     }
 
+    public class TestPostDataDto
+    {
+        public string Data { get; set; }
+    }
+
     public abstract class BaseController : Controller
     {
         private readonly ICommandProcessor _commandProcessor;
@@ -67,6 +72,18 @@ namespace MyB2B.Web.Controllers
         public IActionResult Register([FromBody] RegisterDataDto registerData)
         {
             return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword));
+        }
+
+        [HttpGet("get-test-token")]
+        public IActionResult GetTestToken()
+        {
+            return Json(new { Status = "OK" });
+        }
+
+        [HttpPost("post-test-token")]
+        public IActionResult PostTestToken([FromBody] TestPostDataDto data)
+        {
+            return Json(new { Status = "OK" });
         }
     }
 }

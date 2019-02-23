@@ -1,17 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Principal;
+using MyB2B.Web.Infrastructure.Authorization.UserService;
 
 namespace MyB2B.Web.Infrastructure.Authorization
 {
-    public class ApplicationIdentity : ClaimsIdentity
+    public class ApplicationPrincipal : ClaimsPrincipal
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string JwtToken { get; set; }
+        public ApplicationPrincipal(IPrincipal principal) :base(principal) { }
+        public ApplicationPrincipal(IIdentity identity) : base(identity) { }
 
-        public int CompanyId { get; set; }
+        public int UserId => Convert.ToInt32(GetClaimValueOrDefault(ApplicationClaimType.UserId, "0"));
+        public string FirstName => GetClaimValueOrDefault(ApplicationClaimType.UserFirstName, "-");
+        public string LastName => GetClaimValueOrDefault(ApplicationClaimType.UserLastName, "-");
+        public bool IsConfirmed => Convert.ToBoolean(GetClaimValueOrDefault(ApplicationClaimType.UserIsConfirmed));
 
-        public ApplicationIdentity() { }
-        public ApplicationIdentity(IEnumerable<Claim> claims) : base(claims) { }
+        private string GetClaimValueOrDefault(string claimType, string defaultValue = null)
+        {
+            var claim = FindFirst(claimType);
+            return claim != null ? claim.Value : defaultValue ?? string.Empty;
+        }
     }
 }

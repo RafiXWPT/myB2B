@@ -7,6 +7,7 @@ import { Counter } from './components/Counter';
 import { LogIn } from './components/LogIn/LogIn';
 import { Register } from './components/Register/Register';
 import { TestToken } from './components/TestToken/TestToken';
+import { AccountAdministration } from './components/AccountAdministration/AccountAdministration';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -19,6 +20,7 @@ export default class App extends Component {
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/log-in' component={LogIn} />
         <Route path='/register' component={Register} />
+        <Route path='/account-administration' component={AccountAdministration} />
         <Route path='/test-token' component={TestToken} />
       </Layout>
     );

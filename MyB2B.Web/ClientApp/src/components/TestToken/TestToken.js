@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button} from 'react-bootstrap';
-import {RequestExtensions} from '../Extensions/RequestExtensions'
+import {MyB2BRequest} from '../Extensions/MyB2BRequest'
 
 export class TestToken extends Component {
     static displayName = TestToken.name;
@@ -12,14 +12,14 @@ export class TestToken extends Component {
     }
 
     testGetToken = event => {
-        RequestExtensions.getWithToken('api/Account/get-test-token',
+        MyB2BRequest.get('api/Account/get-test-token',
         result => {
             console.log(result);
         });           
     }
 
     testPostToken = event => {
-        RequestExtensions.postWithToken('api/Account/post-test-token',
+        MyB2BRequest.post('api/Account/post-test-token',
         JSON.stringify({data: 'X'}), result => {
             console.log(result);
         });
@@ -47,6 +47,8 @@ export class TestToken extends Component {
     render () {
         return (
             <div>
+                <div className="col-md-12" style={{textAlign:"center"}}>User: token.test / Password: token.test</div>
+                <div className="col-md-12" style={{textAlign:"center"}}>User must be registered. Check results in console.</div>
                 <Button block bssize="large" onClick={this.testGetToken}>Test Get</Button>
                 <Button block bssize="large" onClick={this.testPostToken}>Test Post</Button>
                 <Button block bssize="large" onClick={this.getToken}>Get Token</Button>

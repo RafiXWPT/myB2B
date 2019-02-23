@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Form, Button} from 'react-bootstrap';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
-import './notifications.css';
+import { NotificationManager, NotificationContainer } from 'react-notifications';
+import "../../libs/notifications.css";
 import "./Register.css";
 
 export class Register extends Component {
@@ -65,7 +65,7 @@ export class Register extends Component {
     const {displayErrors, displaySamePasswordError} = this.state;
     return (
     <div className="Register">
-        <form noValidate onSubmit={this.handleSubmit} className={displayErrors ? 'displayErrors' : ''}>
+        <Form noValidate onSubmit={this.handleSubmit} className={displayErrors ? 'displayErrors' : ''}>
         <Form.Group controlId="username" bssize="large">
           <Form.Label>Username:</Form.Label>
           <Form.Control autoFocus type="text" value={this.state.username} onChange={this.formChange} />
@@ -83,7 +83,7 @@ export class Register extends Component {
           <Form.Control type="password" value={this.state.confirmPassword} onChange={this.formChange} className={displaySamePasswordError ? 'samePassword' : ''} />
         </Form.Group>
         <Button block bssize="large" disabled={!this.validateEmptyForm()} type="submit">Register</Button>
-        </form>
+        </Form>
         <NotificationContainer/>
     </div>
     );

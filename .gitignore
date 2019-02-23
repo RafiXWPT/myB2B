@@ -15,7 +15,6 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-ClientApp/
 x64/
 x86/
 bld/
@@ -261,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /myB2B.Web/ClientApp/package-lock.json
+/.vscode/*

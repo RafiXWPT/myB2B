@@ -1,7 +1,11 @@
-export class RequestExtensions {
+export class MyB2BRequest {
     static refreshToken = () => {
+        var localAuthToken = localStorage.getItem('auth-token');
+        if(localAuthToken == null) {
+            throw new Error('no token in storage');
+        }
         return fetch('api/Account/refresh-token', {
-            headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token')} 
+            headers: {'Authorization': 'Bearer ' + localAuthToken} 
          })
          .then(response => response.json())
          .then(data => {
@@ -11,8 +15,8 @@ export class RequestExtensions {
          });
     }
 
-    static getWithToken = (url, actionFunction, additionalHeaders) => {
-        RequestExtensions.refreshToken().then(x => {
+    static get = (url, actionFunction, additionalHeaders) => {
+        MyB2BRequest.refreshToken().then(x => {
             fetch(url, {
                 method: 'GET',
                 redirect: 'follow',
@@ -40,8 +44,8 @@ export class RequestExtensions {
         });                       
     }
 
-    static postWithToken = (url, body, actionFunction, additionalHeaders) => {
-        RequestExtensions.refreshToken().then(x => {
+    static post = (url, body, actionFunction, additionalHeaders) => {
+        MyB2BRequest.refreshToken().then(x => {
             fetch(url, {
                 method: 'POST',
                 redirect: 'follow',

@@ -46,11 +46,12 @@ export class AccountAdministration extends Component {
             <Button style={{margin: 5}} className="float-right" size="sm" onClick={this.handleOpenModal}>Edit</Button>
             </div>    
                 <div class="col-md-3">
-                    <ButtonGroup vertical className="btn-block">
-                        <Button style={{margin: 5}} block onClick={this.handleSwitchToProfile}>User profile</Button>
-                        <Button style={{margin: 5}} block onClick={this.handleSwitchCompany}>User company</Button>
-                    </ButtonGroup>
+                <ButtonGroup vertical className="btn-block">
+                    <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchToProfile}>User profile</Button>
+                    <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchCompany}>User company</Button>
+                </ButtonGroup>
                 </div>
+
                 <div class="col-md-9">
                     {this.state.currentDetailsComponet}
                 </div>

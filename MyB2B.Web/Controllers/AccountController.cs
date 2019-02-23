@@ -100,7 +100,7 @@ namespace MyB2B.Web.Controllers
         [HttpGet("get-test-token")]
         public IActionResult GetTestToken()
         {
-            return Json(new { Status = "OK" });
+            return Json(new {Status = "OK"});
         }
 
         [HttpPost("post-test-token")]

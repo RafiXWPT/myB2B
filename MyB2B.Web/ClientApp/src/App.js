@@ -7,6 +7,7 @@ import { Register } from './components/Register/Register';
 import { TestToken } from './components/TestToken/TestToken';
 import { AccountAdministration } from './components/AccountAdministration/AccountAdministration';
 import {PrivateRoute} from './components/PrivateRoute';
+import { InvoiceGenerator } from './components/InvoiceGenerator/InvoiceGenerator';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -19,6 +20,7 @@ export default class App extends Component {
         <Route path='/register' component={Register} />
         <PrivateRoute path='/account-administration' component={AccountAdministration} />
         <PrivateRoute path='/test-token' component={TestToken} />
+        <PrivateRoute path='/test-invoice-generator' component={InvoiceGenerator} />
       </Layout>
     );
   }

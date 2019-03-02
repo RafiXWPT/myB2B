@@ -33,7 +33,6 @@ export class LogIn extends Component {
       .then(response => response.json())
       .then(data => {
         if(data.success) {
-          AuthorizationService.SetAuthenticationState(true);
           NotificationManager.success("User logged in");
         } else {
           this.setState({ username: "", password: "" });

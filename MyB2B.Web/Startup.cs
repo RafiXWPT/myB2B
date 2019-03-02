@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -196,7 +197,18 @@ namespace MyB2B.Web
 
         private void RegisterServices()
         {
+            RegisterSingletons();
+            RegisterScoped();
+        }
+
+        private void RegisterSingletons()
+        {
             Container.Register<IUserService, UserService>(Lifestyle.Singleton);
+        }
+
+        private void RegisterScoped()
+        {
+            Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
         }
     }
 }

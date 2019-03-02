@@ -25,7 +25,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj" />
+    <ProjectReference Include="..\MyB2B.Server.Documents\MyB2B.Server.Documents.csproj" />
     <ProjectReference Include="..\MyB2B.Web.Infrastructure\MyB2B.Web.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="pdfTemplate.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

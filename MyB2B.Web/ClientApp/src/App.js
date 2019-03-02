@@ -6,6 +6,7 @@ import { LogIn } from './components/LogIn/LogIn';
 import { Register } from './components/Register/Register';
 import { TestToken } from './components/TestToken/TestToken';
 import { AccountAdministration } from './components/AccountAdministration/AccountAdministration';
+import {PrivateRoute} from './components/PrivateRoute';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -13,11 +14,11 @@ export default class App extends Component {
   render () {
       return (
       <Layout>
-        <Route exact path='/' component={Home} />
+        <PrivateRoute exact path='/' component={Home} />
         <Route path='/log-in' component={LogIn} />
         <Route path='/register' component={Register} />
-        <Route path='/account-administration' component={AccountAdministration} />
-        <Route path='/test-token' component={TestToken} />
+        <PrivateRoute path='/account-administration' component={AccountAdministration} />
+        <PrivateRoute path='/test-token' component={TestToken} />
       </Layout>
     );
   }

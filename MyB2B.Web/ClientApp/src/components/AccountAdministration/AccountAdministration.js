@@ -41,18 +41,18 @@ export class AccountAdministration extends Component {
     render () {
         return (
         <div>
-            <div class="row">
+            <div className="row">
             <div className="col-md-12">
             <Button style={{margin: 5}} className="float-right" size="sm" onClick={this.handleOpenModal}>Edit</Button>
             </div>    
-                <div class="col-md-3">
+                <div className="col-md-3">
                 <ButtonGroup vertical className="btn-block">
                     <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchToProfile}>User profile</Button>
                     <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchCompany}>User company</Button>
                 </ButtonGroup>
                 </div>
 
-                <div class="col-md-9">
+                <div className="col-md-9">
                     {this.state.currentDetailsComponet}
                 </div>
             </div>

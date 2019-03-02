@@ -3,6 +3,7 @@ import {Form, Button} from 'react-bootstrap';
 import { NotificationManager, NotificationContainer } from 'react-notifications';
 import "../../libs/notifications.css";
 import "./LogIn.css";
+import { AuthorizationService } from '../Services/AuthorizationService';
 
 export class LogIn extends Component {
   static displayName = LogIn.name;
@@ -32,6 +33,7 @@ export class LogIn extends Component {
       .then(response => response.json())
       .then(data => {
         if(data.success) {
+          AuthorizationService.SetAuthenticationState(true);
           NotificationManager.success("User logged in");
         } else {
           this.setState({ username: "", password: "" });

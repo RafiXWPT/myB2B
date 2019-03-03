@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
 import { LogIn } from './components/LogIn/LogIn';
 import { Register } from './components/Register/Register';
+import { TestToken } from './components/TestToken/TestToken';
+import { AccountAdministration } from './components/AccountAdministration/AccountAdministration';
+import {PrivateRoute} from './components/PrivateRoute';
+import { InvoiceGenerator } from './components/InvoiceGenerator/InvoiceGenerator';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -14,10 +16,11 @@ export default class App extends Component {
       return (
       <Layout>
         <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
         <Route path='/log-in' component={LogIn} />
         <Route path='/register' component={Register} />
+        <PrivateRoute path='/account-administration' component={AccountAdministration} />
+        <PrivateRoute path='/test-token' component={TestToken} />
+        <PrivateRoute path='/test-invoice-generator' component={InvoiceGenerator} />
       </Layout>
     );
   }

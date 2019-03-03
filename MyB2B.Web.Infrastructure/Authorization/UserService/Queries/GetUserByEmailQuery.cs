@@ -27,11 +27,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService.Queries
 
         public override ActionResult<ApplicationUser> Query(GetUserByEmailQuery query)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == query.Email);
-            if(user == null)
-                return ActionResult<ApplicationUser>.Fail("There is no user with that email");
-
-            return ActionResult<ApplicationUser>.Done(user);
+            return _context.Users.FirstOrDefault(u => u.Email == query.Email).WithAnyActionResult("There is no user with that email");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
+using MyB2B.Web.Infrastructure.Authorization;
 using MyB2B.Web.Infrastructure.Authorization.UserService;
+using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
@@ -34,10 +38,10 @@ namespace MyB2B.Web
         }
 
         private IConfiguration Configuration { get; }
-        private Container Container { get; } = new Container();
+        private Container Container { get; } = DependencyContainer.Container;
         private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
 
-    public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             IntegrateSimpleInjector(services);
@@ -52,14 +56,7 @@ namespace MyB2B.Web
             {
                 token.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
-                    {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = -1;
-                        var user = userService.GetById(userId);
-                        if (user == null) context.Fail("Not existing");
-                        return Task.CompletedTask;
-                    }
+                    OnTokenValidated = OnTokenValidatedAction
                 };
                 token.RequireHttpsMetadata = false;
                 token.SaveToken = true;
@@ -74,6 +71,27 @@ namespace MyB2B.Web
                
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+        }
+
+        private async Task OnTokenValidatedAction(TokenValidatedContext context)
+        {
+            var userService = Container.GetInstance<IUserService>();
+            var applicationPrincipal = new ApplicationPrincipal(context.Principal);
+
+            try
+            {
+                applicationPrincipal.ValidateUserEndpoint(context.SecurityToken as JwtSecurityToken, context.HttpContext.Request.Host.Value);
+            }
+            catch (UserEndpointMismatchException)
+            {
+                context.Fail("Mismatch between endpoint adressess.");
+            }
+
+            var user = userService.GetById(applicationPrincipal.UserId);
+            if (user.IsFail)
+                context.Fail("Not existing");
+
+            await Task.CompletedTask;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -190,7 +208,18 @@ namespace MyB2B.Web
 
         private void RegisterServices()
         {
+            RegisterSingletons();
+            RegisterScoped();
+        }
+
+        private void RegisterSingletons()
+        {
             Container.Register<IUserService, UserService>(Lifestyle.Singleton);
+        }
+
+        private void RegisterScoped()
+        {
+            Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
         }
     }
 }

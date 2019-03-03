@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.Identity;
@@ -24,6 +26,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
         public const string UserCompanyName = "USER_COMPANY_NAME";
         public const string UserLastLoginDate = "USER_LAST_LOG_IN_DATE";
         public const string UserIsConfirmed = "USER_IS_CONFIRMED";
+        public const string UserAuthToken = "USER_AUTH_TOKEN";
     }
 
     public class UserService : IUserService
@@ -39,7 +42,17 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             _serverSecurityTokenSecret = configuration.GetValue<string>("Security:Token:Secret");
         }
 
-        public Result<AuthData> Authenticate(string username, string password)
+        public Result<AuthData> RefreshToken(int userId, string userEndpoint)
+        {
+            var user = _queryProcessor.Query(new GetUserByIdQuery(userId));
+            if (!user.Success)
+                return Result.Fail<AuthData>("there is no user in database");
+
+
+            return Result.Ok(GenerateAuthData(user.Result, userEndpoint));
+        }
+
+        public Result<AuthData> Authenticate(string username, string password, string userEndpointAddress)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return Result.Fail<AuthData>("username or password is empty.");
@@ -53,16 +66,10 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             if (!VerifyPasswordHash(password, userFromDatabase.PasswordHash, userFromDatabase.PasswordSalt))
                 return Result.Fail<AuthData>("given password is incorrect");
 
-            var authData = new AuthData
-            {
-                UserId = userFromDatabase.Id,
-                Token = GenerateAuthenticationToken(userFromDatabase)
-            };
-
-            return Result.Ok(authData);
+            return Result.Ok(GenerateAuthData(userFromDatabase, userEndpointAddress));
         }
 
-        public Result<AuthData> Register(string username, string email, string password, string confirmPassword)
+        public Result<AuthData> Register(string username, string email, string password, string confirmPassword, string userEndpointAddress)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
                 return Result.Fail<AuthData>("Form data is incorrect");
@@ -84,18 +91,13 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
             var databaseUser = command.Output.Result as ApplicationUser;
 
-            var authData = new AuthData
-            {
-                UserId = databaseUser.Id,
-                Token = GenerateAuthenticationToken(databaseUser)
-            };
-
-            return Result.Ok(authData);
+            return Result.Ok(GenerateAuthData(databaseUser, userEndpointAddress));
         }
 
-        public ApplicationUser GetById(int id)
+        public Result<ApplicationUser> GetById(int id)
         {
-            throw new NotImplementedException();
+            var queryAction = _queryProcessor.Query(new GetUserByIdQuery(id));
+            return queryAction.Success ? Result.Ok(queryAction.Result) : Result.Fail<ApplicationUser>(queryAction.Message);
         }
 
         public void Update(ApplicationUser user)
@@ -110,6 +112,20 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
         private static Claim CreateClaim<T>(string claimKey, T claimValue) => new Claim(claimKey, claimValue.ToString());
 
+        private AuthData GenerateAuthData(ApplicationUser user, string userEndpoint)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = GenerateAuthenticationToken(tokenHandler, user, userEndpoint);
+
+            return new AuthData
+            {
+                UserId = user.Id,
+                Token = tokenHandler.WriteToken(token),
+                ValidFrom = token.ValidFrom,
+                ValidTo = token.ValidTo
+            };
+        }
+
         private static void CreatePasswordHash(string plainPassword, out byte[] hash, out byte[] salt)
         {
             if (plainPassword == null) throw new ArgumentNullException("password");
@@ -117,8 +133,8 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
 
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
-                hash = hmac.Key;
-                salt = hmac.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
+                salt = hmac.Key;
+                hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
             }
         }
 
@@ -141,25 +157,24 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             return true;
         }
 
-        private string GenerateAuthenticationToken(ApplicationUser user)
+        private SecurityToken GenerateAuthenticationToken(JwtSecurityTokenHandler tokenHandler, ApplicationUser user, string userEndpoint)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_serverSecurityTokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ApplicationIdentity(new[]
+                Subject = new ClaimsIdentity(new[]
                 {
                     CreateClaim(ApplicationClaimType.UserId, user.Id),
-                    CreateClaim(ApplicationClaimType.UserEndpointAddress, "test-localhost"),
+                    CreateClaim(ApplicationClaimType.UserEndpointAddress, userEndpoint),
                     CreateClaim(ApplicationClaimType.UserCompanyName, "-"),
                     CreateClaim(ApplicationClaimType.UserLastLoginDate, DateTime.Now.AddHours(-1)),
-                    CreateClaim(ApplicationClaimType.UserIsConfirmed, false)
+                    CreateClaim(ApplicationClaimType.UserIsConfirmed, user.Status == UserStatus.Verified)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
 
-            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+            return tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
         }
     }
 }

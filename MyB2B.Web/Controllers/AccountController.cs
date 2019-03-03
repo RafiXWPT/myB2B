@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
+using MyB2B.Web.Infrastructure.Authorization;
 using MyB2B.Web.Infrastructure.Authorization.UserService;
 
 namespace MyB2B.Web.Controllers
@@ -25,10 +27,22 @@ namespace MyB2B.Web.Controllers
         public string ConfirmPassword { get; set; }
     }
 
-    public abstract class BaseController : Controller
+    public class TestPostDataDto
+    {
+        public string Data { get; set; }
+    }
+
+    public abstract class PrincipalController : Controller
+    {
+        public new ApplicationPrincipal User => new ApplicationPrincipal(base.User);
+    }
+
+    public abstract class BaseController : PrincipalController
     {
         private readonly ICommandProcessor _commandProcessor;
         private readonly IQueryProcessor _queryProcessor;
+
+        protected string CurrentUserEndpointAddress => ControllerContext?.HttpContext?.Request?.Host.Value;
 
         protected BaseController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
         {
@@ -55,18 +69,55 @@ namespace MyB2B.Web.Controllers
             _userService = userService;
         }
 
+        [HttpGet("refresh-token")]
+        public IActionResult RefreshToken()
+        {
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            if (token == null)
+                return Json("");
+
+            try
+            {
+                var userToken = User.ValidateToken(token, CurrentUserEndpointAddress);
+
+                var expirationTime = userToken.ValidTo - DateTime.UtcNow;
+                if (expirationTime.TotalMinutes < 15)
+                {
+                    return Json(new { ShouldRefresh = true, AuthData = _userService.RefreshToken(User.UserId, CurrentUserEndpointAddress).Value });
+                }
+
+                return Json(new { ShouldRefresh = false });
+            }
+            catch (UserEndpointMismatchException)
+            {
+                return Json(new { ForceTokenInvalidate = true });
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] LoginDataDto loginData)
         {
-            return GetJsonResult(_userService.Authenticate(loginData.Username, loginData.Password));
+            return GetJsonResult(_userService.Authenticate(loginData.Username, loginData.Password, CurrentUserEndpointAddress));
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDataDto registerData)
         {
-            return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword));
+            return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword, CurrentUserEndpointAddress));
+        }
+
+        [HttpGet("get-test-token")]
+        public IActionResult GetTestToken()
+        {
+            return Json(new {Status = "OK"});
+        }
+
+        [HttpPost("post-test-token")]
+        public IActionResult PostTestToken([FromBody] TestPostDataDto data)
+        {
+            return Json(new { Status = "OK" });
         }
     }
 }

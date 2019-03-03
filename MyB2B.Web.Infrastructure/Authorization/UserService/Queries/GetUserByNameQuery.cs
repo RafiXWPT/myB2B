@@ -27,11 +27,7 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService.Queries
 
         public override ActionResult<ApplicationUser> Query(GetUserByNameQuery query)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == query.Username);
-            if(user == null)
-                return ActionResult<ApplicationUser>.Fail("There is no user with that username.");
-
-            return ActionResult<ApplicationUser>.Done(user);
+            return _context.Users.FirstOrDefault(u => u.Username == query.Username).WithAnyActionResult("There is no user with that username");
         }
     }
 }

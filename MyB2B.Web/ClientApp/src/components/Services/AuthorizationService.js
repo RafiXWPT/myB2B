@@ -4,7 +4,7 @@ import { NavMenu } from '../NavMenu';
 
 export class AuthorizationService extends Component {
     static updateAuthStatus = () => {
-        MyB2BRequest.refreshToken().then(result => {
+        return MyB2BRequest.refreshToken().then(result => {
             localStorage.setItem('is-authenticate', result);
             NavMenu.Instance.updateAuthStatus(result);
         });
@@ -13,8 +13,9 @@ export class AuthorizationService extends Component {
     static LogIn = (userId, token) => {
         localStorage.setItem('user-id', userId);
         localStorage.setItem('auth-token', token);
-        AuthorizationService.updateAuthStatus();
-        window.location.href = '/';
+        AuthorizationService.updateAuthStatus().then(x => {
+            window.location.href = '/';
+        });
     }
 
     static LogOut = () => {

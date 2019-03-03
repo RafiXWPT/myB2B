@@ -26,5 +26,7 @@ namespace MyB2B.Domain.Invoice
         public decimal TotalGrossAmount { get; set; }
 
         public double InvoiceDiscount { get; set; }
+
+        public byte[] Template { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -75,6 +77,16 @@ namespace MyB2B.Web
         {
             var userService = Container.GetInstance<IUserService>();
             var applicationPrincipal = new ApplicationPrincipal(context.Principal);
+
+            try
+            {
+                applicationPrincipal.ValidateUserEndpoint(context.SecurityToken as JwtSecurityToken, context.HttpContext.Request.Host.Value);
+            }
+            catch (UserEndpointMismatchException)
+            {
+                context.Fail("Mismatch between endpoint adressess.");
+            }
+
             var user = userService.GetById(applicationPrincipal.UserId);
             if (user.IsFail)
                 context.Fail("Not existing");
@@ -196,7 +208,18 @@ namespace MyB2B.Web
 
         private void RegisterServices()
         {
+            RegisterSingletons();
+            RegisterScoped();
+        }
+
+        private void RegisterSingletons()
+        {
             Container.Register<IUserService, UserService>(Lifestyle.Singleton);
+        }
+
+        private void RegisterScoped()
+        {
+            Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
         }
     }
 }

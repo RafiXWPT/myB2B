@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -41,6 +42,8 @@ namespace MyB2B.Web.Controllers
         private readonly ICommandProcessor _commandProcessor;
         private readonly IQueryProcessor _queryProcessor;
 
+        protected string CurrentUserEndpointAddress => ControllerContext?.HttpContext?.Request?.Host.Value;
+
         protected BaseController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
         {
             _commandProcessor = commandProcessor;
@@ -73,28 +76,36 @@ namespace MyB2B.Web.Controllers
             if (token == null)
                 return Json("");
 
-            var userToken = User.ValidateToken(token);
-            var expirationTime = userToken.ValidTo - DateTime.UtcNow;
-            if (expirationTime.TotalMinutes < 15)
+            try
             {
-                return Json(new {ShouldRefresh = true, AuthData = _userService.RefreshToken(User.UserId).Value });
-            }
+                var userToken = User.ValidateToken(token, CurrentUserEndpointAddress);
 
-            return Json(new {ShouldRefresh = false});
+                var expirationTime = userToken.ValidTo - DateTime.UtcNow;
+                if (expirationTime.TotalMinutes < 15)
+                {
+                    return Json(new { ShouldRefresh = true, AuthData = _userService.RefreshToken(User.UserId, CurrentUserEndpointAddress).Value });
+                }
+
+                return Json(new { ShouldRefresh = false });
+            }
+            catch (UserEndpointMismatchException)
+            {
+                return Json(new { ForceTokenInvalidate = true });
+            }
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] LoginDataDto loginData)
         {
-            return GetJsonResult(_userService.Authenticate(loginData.Username, loginData.Password));
+            return GetJsonResult(_userService.Authenticate(loginData.Username, loginData.Password, CurrentUserEndpointAddress));
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDataDto registerData)
         {
-            return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword));
+            return GetJsonResult(_userService.Register(registerData.Username, registerData.Email, registerData.Password, registerData.ConfirmPassword, CurrentUserEndpointAddress));
         }
 
         [HttpGet("get-test-token")]

@@ -1,23 +1,29 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 import { MyB2BRequest } from '../Extensions/MyB2BRequest';
+import { NavMenu } from '../NavMenu';
 
 export class AuthorizationService extends Component {
-    
-    constructor(props) {
-        super(props);
-
-        this.state = {isAuthenticated: false};
-
+    static updateAuthStatus = () => {
         MyB2BRequest.refreshToken().then(result => {
-            AuthorizationService.SetAuthenticationState(result.isAuthenticated);
+            localStorage.setItem('is-authenticate', result);
+            NavMenu.Instance.updateAuthStatus(result);
         });
     }
 
-    static SetAuthenticationState = (state) => {
-        this.setState({isAuthenticated: state});
+    static LogIn = (userId, token) => {
+        localStorage.setItem('user-id', userId);
+        localStorage.setItem('auth-token', token);
+        AuthorizationService.updateAuthStatus();
+        window.location.href = '/';
     }
 
-    static IsAuthenticated = () => {
-        return this.state.isAuthenticated;
+    static LogOut = () => {
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('auth-token');
+        localStorage.setItem('is-authenticate', false);
+        NavMenu.Instance.updateAuthStatus(false);
+        window.location.href = '/log-in';
     }
+
+    static IsAuthenticated = () => {return localStorage.getItem('is-authenticate') == "true"};
 }

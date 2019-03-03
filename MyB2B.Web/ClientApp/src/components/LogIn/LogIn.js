@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {Form, Button} from 'react-bootstrap';
-import { NotificationManager, NotificationContainer } from 'react-notifications';
-import "../../libs/notifications.css";
-import "./LogIn.css";
 import { AuthorizationService } from '../Services/AuthorizationService';
+import "./LogIn.css";
+import { NotificationHelper } from '../../NotificationHelper';
 
 export class LogIn extends Component {
   static displayName = LogIn.name;
@@ -33,10 +32,10 @@ export class LogIn extends Component {
       .then(response => response.json())
       .then(data => {
         if(data.success) {
-          NotificationManager.success("User logged in");
+          AuthorizationService.LogIn(data.result.userId, data.result.token);
         } else {
           this.setState({ username: "", password: "" });
-          NotificationManager.error(data.errorMessage);
+          NotificationHelper.Instance.error(data.errorMessage);
         }
       })
       .catch(err => console.log);
@@ -56,7 +55,6 @@ export class LogIn extends Component {
         </Form.Group>
         <Button block bssize="large" disabled={!this.validateEmptyForm()} type="submit">Login</Button>
         </form>
-        <NotificationContainer/>
     </div>
     );
   }

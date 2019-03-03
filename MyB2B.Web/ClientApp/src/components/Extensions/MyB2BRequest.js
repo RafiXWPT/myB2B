@@ -5,22 +5,37 @@ export class MyB2BRequest {
     static refreshToken = () => {
         var localAuthToken = localStorage.getItem('auth-token');
         if(localAuthToken == null) {
-            throw new Error('no token in storage');
+            throw new Error('no token to refresh');
         }
         return fetch('api/Account/refresh-token', {
             headers: {'Authorization': 'Bearer ' + localAuthToken} 
          })
+         .then(response => {
+             if(response.status == 401) {
+                 window.location.href = '/log-in';
+                 throw new Error('not authorized');
+             }
+
+             return response;
+         })
          .then(response => response.json())
          .then(data => {
-             if(data.shouldRefresh) {
+             if(data.ForceTokenInvalidate) {
+                 localStorage.setItem('auth-token', null);
+                 return false;
+             } else if(data.shouldRefresh) {
                 localStorage.setItem('auth-token', data.authData.token);
              }
-         });
+
+             return true;
+         })
     }
 
     static downloadFile = (url) => {
         MyB2BRequest.refreshToken().then(x => {
-
+            if(x == false) {
+                return;
+            }
             axios({
                 url: url,
                 method: 'GET',
@@ -39,6 +54,10 @@ export class MyB2BRequest {
 
     static get = (url, actionFunction, additionalHeaders) => {
         MyB2BRequest.refreshToken().then(x => {
+            if(x == false) {
+                return;
+            }
+
             fetch(url, {
                 method: 'GET',
                 redirect: 'follow',
@@ -68,6 +87,10 @@ export class MyB2BRequest {
 
     static post = (url, body, actionFunction, additionalHeaders) => {
         MyB2BRequest.refreshToken().then(x => {
+            if(x == false) {
+                return;
+            }
+
             fetch(url, {
                 method: 'POST',
                 redirect: 'follow',

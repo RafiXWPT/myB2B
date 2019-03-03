@@ -4,7 +4,7 @@ import { AuthorizationService } from './Services/AuthorizationService';
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
-      localStorage.getItem('auth-token') != null
+      AuthorizationService.IsAuthenticated()
         ? <Component {...props} />
         : <Redirect to={{
             pathname: '/log-in',

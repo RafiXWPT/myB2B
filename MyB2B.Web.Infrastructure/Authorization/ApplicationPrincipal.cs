@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -14,6 +15,11 @@ using SimpleInjector;
 
 namespace MyB2B.Web.Infrastructure.Authorization
 {
+    public class UserEndpointMismatchException : SecurityTokenValidationException
+    {
+        public UserEndpointMismatchException() : base("Endpoint saved in token mismatch current user address.") { }
+    }
+
     public class ApplicationPrincipal : ClaimsPrincipal
     {
         public ApplicationPrincipal(IPrincipal principal) :base(principal) { }
@@ -30,7 +36,7 @@ namespace MyB2B.Web.Infrastructure.Authorization
             return claim != null ? claim.Value : defaultValue ?? string.Empty;
         }
 
-        public SecurityToken ValidateToken(string token)
+        public SecurityToken ValidateToken(string token, string userEndpointAddress)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityTokenSecret = DependencyContainer.Container.GetInstance<IConfiguration>().GetValue<string>("Security:Token:Secret");
@@ -43,7 +49,18 @@ namespace MyB2B.Web.Infrastructure.Authorization
             };
 
             tokenHandler.ValidateToken(token, validation, out SecurityToken tokenSource);
+            ValidateUserEndpoint(tokenSource as JwtSecurityToken, userEndpointAddress);
+
+
             return tokenSource;
+        }
+
+        public void ValidateUserEndpoint(JwtSecurityToken token, string userEndpointAddress)
+        {
+            if (token.Claims.First(c => c.Type == ApplicationClaimType.UserEndpointAddress).Value != userEndpointAddress)
+            {
+                throw new UserEndpointMismatchException();
+            }
         }
     }
 }

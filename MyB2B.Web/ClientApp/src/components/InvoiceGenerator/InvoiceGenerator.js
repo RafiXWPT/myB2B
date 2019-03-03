@@ -12,7 +12,7 @@ export class InvoiceGenerator extends Component {
     }
 
     handleTestGenerateInvoice = event => {
-        MyB2BRequest.post('api/Invoice/generate-invoice-test', JSON.stringify({id: '123'}), result => {
+        MyB2BRequest.post('api/Invoice/generate-invoice-test', JSON.stringify({id: 123}), result => {
             MyB2BRequest.downloadFile('api/Invoice/download-invoice-test?id='+result.identifier);
         });
     }

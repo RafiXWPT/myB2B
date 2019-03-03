@@ -36,9 +36,7 @@ export class TestToken extends Component {
             if(data.success) {
                 localStorage.setItem('user-id', data.result.userId);
                 localStorage.setItem('auth-token', data.result.token);
-                var i = 0;
             } else {
-                var j = 0;
             }
           })
           .catch(err => console.log);

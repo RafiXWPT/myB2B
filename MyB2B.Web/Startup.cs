@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,6 +77,16 @@ namespace MyB2B.Web
         {
             var userService = Container.GetInstance<IUserService>();
             var applicationPrincipal = new ApplicationPrincipal(context.Principal);
+
+            try
+            {
+                applicationPrincipal.ValidateUserEndpoint(context.SecurityToken as JwtSecurityToken, context.HttpContext.Request.Host.Value);
+            }
+            catch (UserEndpointMismatchException)
+            {
+                context.Fail("Mismatch between endpoint adressess.");
+            }
+
             var user = userService.GetById(applicationPrincipal.UserId);
             if (user.IsFail)
                 context.Fail("Not existing");

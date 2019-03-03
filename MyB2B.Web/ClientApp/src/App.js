@@ -15,7 +15,7 @@ export default class App extends Component {
   render () {
       return (
       <Layout>
-        <PrivateRoute exact path='/' component={Home} />
+        <Route exact path='/' component={Home} />
         <Route path='/log-in' component={LogIn} />
         <Route path='/register' component={Register} />
         <PrivateRoute path='/account-administration' component={AccountAdministration} />

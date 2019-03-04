@@ -12,12 +12,7 @@ namespace MyB2B.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            var builder = WebHost.CreateDefaultBuilder(args);
-#if DEBUG
-            builder.UseSetting("ConnectionString", "Server=localhost\\SQLEXPRESS;Database=MyB2B;Integrated Security=True;MultipleActiveResultSets=True;");
-#endif
-                builder.UseStartup<Startup>();
-                return builder;
+            return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
         }
 
     }

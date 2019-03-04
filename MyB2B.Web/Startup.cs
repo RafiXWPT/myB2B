@@ -109,9 +109,11 @@ namespace MyB2B.Web
                 app.UseHsts();
             }
 
-            using (AsyncScopedLifestyle.BeginScope(Container))
-            {
-                Container.GetService<MyB2BContext>().Database.Migrate();
+            if(!Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
+                using (AsyncScopedLifestyle.BeginScope(Container))
+                {
+                    Container.GetService<MyB2BContext>().Database.Migrate();
+                }
             }
 
             app.UseHttpsRedirection();
@@ -171,7 +173,11 @@ namespace MyB2B.Web
 
         private void RegisterDbContext()
         {
-            Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
+            if(Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase().Options);
+            } else {
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
+            }
             Container.Register<MyB2BContext>(Lifestyle.Scoped);
             Container.RegisterInstance<Func<MyB2BContext>>(Container.GetInstance<MyB2BContext>);
         }

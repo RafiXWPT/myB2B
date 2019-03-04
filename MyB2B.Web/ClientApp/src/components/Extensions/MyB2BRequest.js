@@ -1,121 +1,112 @@
-import {saveAs} from 'file-saver';
 import axios from 'axios';
 
 export class MyB2BRequest {
-    static refreshToken = () => {
+    static refreshToken = async () => {
         var localAuthToken = localStorage.getItem('auth-token');
         if(localAuthToken == null) {
-            throw new Error('no token to refresh');
+            return false;
         }
-        return fetch('api/Account/refresh-token', {
+
+        var refreshTokenResult = await fetch('api/Account/refresh-token', {
             headers: {'Authorization': 'Bearer ' + localAuthToken} 
-         })
-         .then(response => {
-             if(response.status == 401) {
-                 window.location.href = '/log-in';
-                 throw new Error('not authorized');
-             }
-
-             return response;
-         })
-         .then(response => response.json())
-         .then(data => {
-             if(data.ForceTokenInvalidate) {
-                 localStorage.setItem('auth-token', null);
-                 return false;
-             } else if(data.shouldRefresh) {
-                localStorage.setItem('auth-token', data.authData.token);
-             }
-
-             return true;
-         })
-    }
-
-    static downloadFile = (url) => {
-        MyB2BRequest.refreshToken().then(x => {
-            if(x == false) {
-                return;
-            }
-            axios({
-                url: url,
-                method: 'GET',
-                headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token')},
-                responseType: 'blob',
-              }).then((response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'invoice.pdf');
-                document.body.appendChild(link);
-                link.click();
-              });           
         });
+
+        if(refreshTokenResult.status == 401) {
+            window.location.href = '/log-in';
+            return false;
+        } else {
+            var jsonResponse = await refreshTokenResult.json();
+            if(jsonResponse.ForceTokenInvalidate) {
+                 localStorage.removeItem('auth-token');
+            } else if(jsonResponse.shouldRefresh) {
+                localStorage.setItem('auth-token', jsonResponse.data.authData.token);
+            }
+            return true;
+        }
     }
 
-    static get = (url, actionFunction, additionalHeaders) => {
-        MyB2BRequest.refreshToken().then(x => {
-            if(x == false) {
-                return;
-            }
+    static downloadFile = async (url) => {
+        var isTokenRefreshed = await MyB2BRequest.refreshToken();
+        if(isTokenRefreshed == false) {
+            return;
+        }
 
-            fetch(url, {
-                method: 'GET',
-                redirect: 'follow',
-                headers: {
-                    ...additionalHeaders,
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
-                }
-            })
-            .then(result => {
-                if(result.redirected) {
-                    window.location = result.url;
-                    throw new Error("redirect");
-                }
-                if(result.ok == false && result.status == 500)
-                {
-                    window.location = '/error';
-                    throw new Error('redirect-error');
-                }
-                return result;
-            })
-            .then(result => result.json())
-            .then(actionFunction)
-            .catch(err => console.log(err)); 
-        });                       
+        axios({
+            url: url,
+            method: 'GET',
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token')},
+            responseType: 'blob',
+          }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'invoice.pdf');
+            document.body.appendChild(link);
+            link.click();
+          });
     }
 
-    static post = (url, body, actionFunction, additionalHeaders) => {
-        MyB2BRequest.refreshToken().then(x => {
-            if(x == false) {
-                return;
-            }
+    static get = async (url, actionFunction, additionalHeaders) => {
+        var isTokenRefreshed = await MyB2BRequest.refreshToken();
+        if(isTokenRefreshed == false) {
+            return;
+        }
 
-            fetch(url, {
-                method: 'POST',
-                redirect: 'follow',
-                body: body,
-                headers: {
-                    ...additionalHeaders,
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
-                }
-            })
-            .then(result => {
-                if(result.redirected) {
-                    window.location = result.url;
-                    throw new Error("redirect");
-                }
-                if(result.ok == false && result.status == 500)
-                {
-                    window.location = '/error';
-                    throw new Error('redirect-error');
-                }
-                return result;
-            })
-            .then(result => result.json())
-            .then(actionFunction)
-            .catch(err => console.log(err)); 
-        })       
+        var fetchResult = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow',
+            headers: {
+                ...additionalHeaders,
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+            }
+        });
+
+        if(!MyB2BRequest.checkResponseStatus(fetchResult)) {
+            return;
+        }
+
+        var fetchJson = await fetchResult.json();
+        actionFunction(fetchJson);                 
+    }
+
+    static post = async (url, body, actionFunction, additionalHeaders) => {
+
+        var isTokenRefreshed = await MyB2BRequest.refreshToken();
+        if(isTokenRefreshed == false) {
+            return;
+        }
+
+        var fetchResult = await fetch(url, {
+            method: 'POST',
+            redirect: 'follow',
+            body: body,
+            headers: {
+                ...additionalHeaders,
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+            }
+        });
+
+        if(!MyB2BRequest.checkResponseStatus(fetchResult)) {
+            return;
+        }
+
+        var fetchJson = await fetchResult.json();
+        actionFunction(fetchJson);
+    }
+
+    static checkResponseStatus = (response) => {
+        if(response.redirected) {
+            window.location = response.result.url;
+            return false;
+        }
+
+        if(response.ok == false && response.result.status == 500) {
+            window.location = '/error';
+            return false;
+        }
+
+        return true;
     }
 }

@@ -18,5 +18,9 @@ namespace MyB2B.Domain
 
         [MaxLength(255)]
         public string Country { get; set; }
+
+        public string GetStreetAndNumber() => $"{Street} {Number}";
+
+        public string GetZipAndCity() => $"{ZipCode} {City}";
     }
 }

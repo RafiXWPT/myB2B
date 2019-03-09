@@ -6,10 +6,27 @@
 
   <ItemGroup>
     <PackageReference Include="itext7" Version="7.1.5" />
+    <PackageReference Include="LiczbyNaSlowaNetCore" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyB2B.Domain\MyB2B.Domain.csproj" />
+    <ProjectReference Include="..\MyB2B.Server.Common\MyB2B.Server.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Fonts.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Fonts.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Fonts.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Fonts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyB2B.Domain.Company
+namespace MyB2B.Domain.Companies
 {
     public class CompanyClient : AuditableImmutableEntity
     {

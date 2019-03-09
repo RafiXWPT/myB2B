@@ -6,7 +6,8 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyB2B.Domain.Invoice;
+using MyB2B.Domain.Invoices;
+using MyB2B.SampleObjects;
 using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -32,19 +33,7 @@ namespace MyB2B.Web.Controllers
         [HttpPost("generate-invoice-test")]
         public IActionResult GenerateInvoiceTest(int id)
         {
-            var invoice = new Invoice();
-            invoice.Number = "69";
-            invoice.Generated = DateTime.Now;
-            invoice.Status = InvoiceStatus.WaitingForPayment;
-
-            if (id % 2 == 1)
-            {
-                invoice.Template = null;
-            }
-            else
-            {
-                invoice.Template = System.IO.File.ReadAllBytes("pdfTemplate.png");
-            }
+            var invoice = Samples.SampleInvoice(new Random().NextDouble() < 0.5 ? null : "pdfTemplate.png");
 
             FakeInvoiceDb.GeneratedInvoice = _invoiceGenerator.Generate(invoice);
             return Json(new {identifier = Guid.NewGuid()});

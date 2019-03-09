@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using MyB2B.Domain.Company;
+using MyB2B.Domain.Companies;
 
-namespace MyB2B.Domain.Invoice
+namespace MyB2B.Domain.Invoices
 {
     public class InvoicePosition : AuditableImmutableEntity
     {

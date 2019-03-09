@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyB2B.SampleObjects\MyB2B.SampleObjects.csproj" />
+    <ProjectReference Include="..\MyB2B.Server.Documents\MyB2B.Server.Documents.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="pdfTemplate.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MyB2B.Domain.Companies;
 
 namespace MyB2B.Domain.Identity
 {
@@ -14,7 +15,7 @@ namespace MyB2B.Domain.Identity
         public byte[] PasswordHash { get; private set; }
         public byte[] PasswordSalt { get; private set; }
         public string Email { get; private set; }
-        public Company.Company UserCompany { get; private set; }
+        public Company UserCompany { get; private set; }
 
         public UserStatus Status { get; private set; }
 

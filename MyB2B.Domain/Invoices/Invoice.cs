@@ -2,17 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyB2B.Domain.Companies;
 
-namespace MyB2B.Domain.Invoice
+namespace MyB2B.Domain.Invoices
 {
     public class Invoice : AuditableImmutableEntity
     {
         [MaxLength(255)]
         public string Number { get; set; }
 
+        public string DealerName { get; set; }
+        public string DealerCompany { get; set; }
+        public string DealerNip { get; set; }
+        public Address DealerAddress { get; set; }
+
+        public string BuyerName { get; set; }
+        public string BuyerCompany { get; set; }
+        public string BuyerNip { get; set; }
+        public Address BuyerAddress { get; set; }
+
         public DateTime Generated { get; set; }
 
         public InvoiceStatus Status { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public DateTime PaymentToDate { get; set; }
+        public string PaymentBankAccount { get; set; }
+        public string PaymentBankName { get; set; }
 
         public List<InvoicePosition> Items { get; set; }
 
@@ -24,6 +39,9 @@ namespace MyB2B.Domain.Invoice
 
         [Column(TypeName = "decimal(12,5)")]
         public decimal TotalGrossAmount { get; set; }
+
+        [Column(TypeName = "decimal(12,5)")]
+        public decimal PaidAmount { get; set; }
 
         public double InvoiceDiscount { get; set; }
 

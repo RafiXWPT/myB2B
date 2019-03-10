@@ -167,7 +167,7 @@ namespace MyB2B.Server.Documents.Generators
                 itemsTable.AddTextCell(1, 1, $"{item.TotalGrossAmount:C}", TextAlignment.RIGHT);
             }
 
-            itemsTable.AddTextCell(1, 7, "Ogółem:", TextAlignment.RIGHT, false);
+            itemsTable.AddNoBorderTextCell(1, 7, "Ogółem:", TextAlignment.RIGHT);
             itemsTable.AddTextCell(1, 1, $"{invoice.TotalGrossAmount:C}", TextAlignment.RIGHT);
 
             _currentDocument.Add(itemsTable);

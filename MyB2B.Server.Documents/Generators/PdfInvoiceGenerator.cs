@@ -25,10 +25,10 @@ namespace MyB2B.Server.Documents.Generators
         private Document _currentDocument;
         private byte[] _invoiceTemplate;
 
-        private PdfFont _regularFont = PdfFontFactory.CreateFont(Fonts.Calibri, "CP1250", true);
-        private PdfFont _boldFont = PdfFontFactory.CreateFont(Fonts.CALIBRIB, "CP1250", true);
-        private PdfFont _italicsFont = PdfFontFactory.CreateFont(Fonts.CALIBRII, "CP1250", true);
-        private PdfFont _boldedItalicsFont = PdfFontFactory.CreateFont(Fonts.CALIBRIZ, "CP1250", true);
+        private PdfFont _regularFont = PdfFontFactory.CreateFont(Resources.Calibri, "CP1250", true);
+        private PdfFont _boldFont = PdfFontFactory.CreateFont(Resources.CALIBRIB, "CP1250", true);
+        private PdfFont _italicsFont = PdfFontFactory.CreateFont(Resources.CALIBRII, "CP1250", true);
+        private PdfFont _boldedItalicsFont = PdfFontFactory.CreateFont(Resources.CALIBRIZ, "CP1250", true);
 
         public PdfInvoiceGenerator()
         {

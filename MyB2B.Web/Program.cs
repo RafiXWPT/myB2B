@@ -14,6 +14,5 @@ namespace MyB2B.Web
         {
             return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
         }
-
     }
 }

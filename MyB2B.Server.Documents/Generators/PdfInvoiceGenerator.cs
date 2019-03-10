@@ -13,7 +13,6 @@ using iText.Layout.Properties;
 using MyB2B.Domain.Invoices;
 using MyB2B.Server.Common;
 using MyB2B.Server.Documents.Extensions;
-using MyB2B.Server.Documents.Properties;
 
 namespace MyB2B.Server.Documents.Generators
 {
@@ -25,10 +24,10 @@ namespace MyB2B.Server.Documents.Generators
         private Document _currentDocument;
         private byte[] _invoiceTemplate;
 
-        private PdfFont _regularFont = PdfFontFactory.CreateFont(Resources.Calibri, "CP1250", true);
-        private PdfFont _boldFont = PdfFontFactory.CreateFont(Resources.CALIBRIB, "CP1250", true);
-        private PdfFont _italicsFont = PdfFontFactory.CreateFont(Resources.CALIBRII, "CP1250", true);
-        private PdfFont _boldedItalicsFont = PdfFontFactory.CreateFont(Resources.CALIBRIZ, "CP1250", true);
+        private PdfFont _regularFont = PdfFontFactory.CreateFont("Fonts/Calibri.ttf", "CP1250", true);
+        private PdfFont _boldFont = PdfFontFactory.CreateFont("Fonts/CALIBRIB.ttf", "CP1250", true);
+        private PdfFont _italicsFont = PdfFontFactory.CreateFont("Fonts/CALIBRII.ttf", "CP1250", true);
+        private PdfFont _boldedItalicsFont = PdfFontFactory.CreateFont("Fonts/CALIBRIZ.ttf", "CP1250", true);
 
         public PdfInvoiceGenerator()
         {

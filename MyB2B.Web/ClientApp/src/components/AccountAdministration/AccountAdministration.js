@@ -4,6 +4,8 @@ import {EditCompany} from './Company/EditCompany';
 import {CompanyDetails} from './Company/CompanyDetails';
 import {EditProfile} from './Profile/EditProfile';
 import {ProfileDetails} from './Profile/ProfileDetails';
+import { SecurityDetails } from './Security/SecurityDetails';
+import { EditSecurity } from './Security/EditSecurity';
 
 export class AccountAdministration extends Component {
     static displayName = AccountAdministration.name;
@@ -11,7 +13,7 @@ export class AccountAdministration extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {currentEditTitle: '', currentDetailsComponet: <ProfileDetails/>, currentEditComponent: <EditProfile/>, showModal: false};
+        this.state = {currentEditTitle: '', currentDetailsComponet: <CompanyDetails/>, currentEditComponent: <EditCompany/>, showModal: false};
     }
 
     handleSwitchToProfile = () => {
@@ -22,11 +24,19 @@ export class AccountAdministration extends Component {
         });
     }
 
-    handleSwitchCompany = () => {
+    handleSwitchToCompany = () => {
         this.setState({ 
             currentEditTitle: 'Edit company',
             currentDetailsComponet: <CompanyDetails/>,
             currentEditComponent: <EditCompany/>
+        });
+    }
+
+    handleSwitchToSecurity = () => {
+        this.setState({ 
+            currentEditTitle: 'Edit security',
+            currentDetailsComponet: <SecurityDetails/>,
+            currentEditComponent: <EditSecurity/>
         });
     }
 
@@ -47,8 +57,9 @@ export class AccountAdministration extends Component {
             </div>    
                 <div className="col-md-3">
                 <ButtonGroup vertical className="btn-block">
+                    <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchToCompany}>User company</Button>
                     <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchToProfile}>User profile</Button>
-                    <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchCompany}>User company</Button>
+                    <Button style={{margin: 5}} size="sm" block onClick={this.handleSwitchToSecurity}>Security</Button>
                 </ButtonGroup>
                 </div>
 
@@ -56,12 +67,12 @@ export class AccountAdministration extends Component {
                     {this.state.currentDetailsComponet}
                 </div>
             </div>
-            <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
+            <Modal size="lg" show={this.state.showModal} onHide={this.handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>{this.state.currentEditTitle}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div>{this.state.currentEditComponent}</div>
+                {this.state.currentEditComponent}
             </Modal.Body>
             </Modal>
         </div>

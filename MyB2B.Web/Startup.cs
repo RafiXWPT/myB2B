@@ -43,7 +43,7 @@ namespace MyB2B.Web
 
         private IConfiguration Configuration { get; }
         private Container Container { get; } = DependencyContainer.Container;
-        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
+        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(ApplicationPrincipal).Assembly };
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -185,7 +185,7 @@ namespace MyB2B.Web
         private void RegisterDbContext()
         {
             if(Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
-                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase().Options);
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase("MyB2B").Options);
             } else {
                 Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
             }

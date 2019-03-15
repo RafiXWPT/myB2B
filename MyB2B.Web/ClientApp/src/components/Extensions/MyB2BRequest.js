@@ -97,8 +97,17 @@ export class MyB2BRequest {
     }
 
     static checkResponseStatus = (response) => {
+        if(response.status == 200) {
+            return true;
+        }
+
         if(response.redirected) {
             window.location = response.result.url;
+            return false;
+        }
+
+        if(response.status == 404) {
+            window.location = '/not-found';
             return false;
         }
 
@@ -107,6 +116,6 @@ export class MyB2BRequest {
             return false;
         }
 
-        return true;
+        throw new Error("State not handled.");
     }
 }

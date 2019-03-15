@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using MyB2B.Domain.Results;
 
 namespace MyB2B.Web.Infrastructure.Actions.Queries
 {
@@ -6,6 +7,6 @@ namespace MyB2B.Web.Infrastructure.Actions.Queries
         where TQuery : Query<TResult>
         where TResult : class
     {
-        Task<ActionResult<TResult>> QueryAsync(TQuery query);
+        Task<Result<TResult>> QueryAsync(TQuery query);
     }
 }

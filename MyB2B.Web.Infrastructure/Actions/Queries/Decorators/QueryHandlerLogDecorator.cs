@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using MyB2B.Domain.Results;
 
 namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
 {
@@ -15,7 +16,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
         }
 
         [DebuggerStepThrough]
-        public ActionResult<TResult> Query(TQuery query)
+        public Result<TResult> Query(TQuery query)
         {
             LogQuery(query);
 
@@ -40,7 +41,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
         }
 
         [DebuggerStepThrough]
-        public async Task<ActionResult<TResult>> QueryAsync(TQuery query)
+        public async Task<Result<TResult>> QueryAsync(TQuery query)
         {
             LogQuery(query);
 

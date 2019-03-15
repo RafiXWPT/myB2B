@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using MyB2B.Domain.Results;
 
 namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
 {
@@ -15,7 +16,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
             _decoratedHandler = decoratedHandler;
         }
 
-        public ActionResult<TResult> Query(TQuery query)
+        public Result<TResult> Query(TQuery query)
         {
             _stopwatch.Start();
 
@@ -41,7 +42,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Queries.Decorators
             _decoratedHandler = decoratedHandler;
         }
 
-        public async Task<ActionResult<TResult>> QueryAsync(TQuery query)
+        public async Task<Result<TResult>> QueryAsync(TQuery query)
         {
             _stopwatch.Start();
 

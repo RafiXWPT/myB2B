@@ -45,11 +45,11 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
         public Result<AuthData> RefreshToken(int userId, string userEndpoint)
         {
             var user = _queryProcessor.Query(new GetUserByIdQuery(userId));
-            if (!user.Success)
+            if (user.IsFail)
                 return Result.Fail<AuthData>("there is no user in database");
 
 
-            return Result.Ok(GenerateAuthData(user.Result, userEndpoint));
+            return Result.Ok(GenerateAuthData(user.Value, userEndpoint));
         }
 
         public Result<AuthData> Authenticate(string username, string password, string userEndpointAddress)
@@ -57,11 +57,11 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return Result.Fail<AuthData>("username or password is empty.");
 
-            var queryAction = _queryProcessor.Query(new GetUserByNameQuery(username));
-            if (!queryAction.Success)
+            var queryResult = _queryProcessor.Query(new GetUserByNameQuery(username));
+            if (queryResult.IsFail)
                 return Result.Fail<AuthData>("there is no user with that username");
 
-            var userFromDatabase = queryAction.Result;
+            var userFromDatabase = queryResult.Value;
 
             if (!VerifyPasswordHash(password, userFromDatabase.PasswordHash, userFromDatabase.PasswordSalt))
                 return Result.Fail<AuthData>("given password is incorrect");
@@ -77,27 +77,27 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService
             if (password != confirmPassword)
                 return Result.Fail<AuthData>("Passwords must be the same");
 
-            var queryAction = _queryProcessor.Query(new GetUserByNameQuery(username));
-            if (queryAction.Success)
+            var queryResult = _queryProcessor.Query(new GetUserByNameQuery(username));
+            if (queryResult.IsOk)
                 return Result.Fail<AuthData>("There is already user with that name");
 
-            queryAction = _queryProcessor.Query(new GetUserByEmailQuery(email));
-            if (queryAction.Success)
+            queryResult = _queryProcessor.Query(new GetUserByEmailQuery(email));
+            if (queryResult.IsOk)
                 return Result.Fail<AuthData>("There is already registered account on that e-mail");
 
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
             var command = new CreateUserCommand(username, hash, salt, email);
             _commandProcessor.Execute(command);
 
-            var databaseUser = command.Output.Result as ApplicationUser;
+            var databaseUser = command.Output.Value as ApplicationUser;
 
             return Result.Ok(GenerateAuthData(databaseUser, userEndpointAddress));
         }
 
         public Result<ApplicationUser> GetById(int id)
         {
-            var queryAction = _queryProcessor.Query(new GetUserByIdQuery(id));
-            return queryAction.Success ? Result.Ok(queryAction.Result) : Result.Fail<ApplicationUser>(queryAction.Message);
+            var queryResult = _queryProcessor.Query(new GetUserByIdQuery(id));
+            return queryResult.IsOk ? Result.Ok(queryResult.Value) : Result.Fail<ApplicationUser>(queryResult.Error);
         }
 
         public void Update(ApplicationUser user)

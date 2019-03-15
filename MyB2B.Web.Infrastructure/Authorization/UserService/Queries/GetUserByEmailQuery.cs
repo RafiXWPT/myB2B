@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.Identity;
+using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 
@@ -25,9 +26,10 @@ namespace MyB2B.Web.Infrastructure.Authorization.UserService.Queries
         {
         }
 
-        public override ActionResult<ApplicationUser> Query(GetUserByEmailQuery query)
+        public override Result<ApplicationUser> Query(GetUserByEmailQuery query)
         {
-            return _context.Users.FirstOrDefault(u => u.Email == query.Email).WithAnyActionResult("There is no user with that email");
+            var user = _context.Users.FirstOrDefault(u => u.Email == query.Email);
+            return user != null ? Result.Ok(user) : Result.Fail<ApplicationUser>("There is no user with that email");
         }
     }
 }

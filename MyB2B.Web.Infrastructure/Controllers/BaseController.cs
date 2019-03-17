@@ -9,6 +9,13 @@ namespace MyB2B.Web.Infrastructure.Controllers
         protected string CurrentUserEndpointAddress => ControllerContext?.HttpContext?.Request?.Host.Value;
         protected string RequestToken => Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
 
+        protected JsonResult GetJsonResult(Result result)
+        {
+            return result.IsFail
+                ? Json(new { success = false, errorMessage = result.Error })
+                : Json(new { success = true });
+        }
+
         protected JsonResult GetJsonResult<T>(Result<T> result)
         {
             return result.IsFail

@@ -32,5 +32,12 @@ namespace MyB2B.Domain.Identity
                 Status = UserStatus.NotVerified
             };
         }
+
+        public ApplicationUser AddCompany()
+        {
+            UserCompany = new Company();
+
+            return this;
+        }
     }
 }

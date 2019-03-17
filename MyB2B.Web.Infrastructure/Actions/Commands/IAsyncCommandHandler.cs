@@ -3,7 +3,7 @@
 namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
     public interface IAsyncCommandHandler<in TCommand>
-        where TCommand : Command
+        where TCommand : CommandBase
     {
         Task ExecuteAsync(TCommand command);
     }

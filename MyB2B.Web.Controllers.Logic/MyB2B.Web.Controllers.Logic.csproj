@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AccountAdministration\Commands\" />
     <Folder Include="SampleData\" />
   </ItemGroup>
 

@@ -17,6 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
 using MyB2B.Server.Documents.Generators;
+using MyB2B.Web.Controllers.Logic;
+using MyB2B.Web.Controllers.Logic.AccountAdministration;
 using MyB2B.Web.Controllers.Logic.Authentication;
 using MyB2B.Web.Controllers.Logic.Invoice;
 using MyB2B.Web.Infrastructure.Actions.Commands;
@@ -45,7 +47,7 @@ namespace MyB2B.Web
 
         private IConfiguration Configuration { get; }
         private Container Container { get; } = DependencyContainer.Container;
-        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(ApplicationPrincipal).Assembly };
+        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(DependencyContainer).Assembly, typeof(ControllerLogic).Assembly };
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -246,6 +248,7 @@ namespace MyB2B.Web
         private void RegisterControllersLogic()
         {
             Container.Register<AuthenticationControllerLogic>();
+            Container.Register<AccountAdministrationControllerLogic>();
             Container.Register<InvoiceControllerLogic>();
         }
     }

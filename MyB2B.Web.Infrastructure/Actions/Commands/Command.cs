@@ -2,9 +2,14 @@
 
 namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
-    public abstract class Command { }
-    public abstract class Command<TOutput> : Command
+    public abstract class CommandBase { }
+    public abstract class OutputCommand<TOutput> : CommandBase
     {
         public Result<TOutput> Output { get; set; } = Result.Ok<TOutput>(default);
+    }
+
+    public abstract class Command : CommandBase
+    {
+        public Result Output { get; set; }
     }
 }

@@ -14,16 +14,12 @@ namespace MyB2B.Web.Controllers.Logic.Invoice
         public static byte[] GeneratedInvoice { get; set; }
     }
 
-    public class InvoiceControllerLogic
+    public class InvoiceControllerLogic : ControllerLogic
     {
-        private readonly IQueryProcessor _queryProcessor;
-        private readonly ICommandProcessor _commandProcessor;
         private readonly IInvoiceGenerator _invoiceGenerator;
 
-        public InvoiceControllerLogic(IQueryProcessor queryProcessor, ICommandProcessor commandProcessor, IInvoiceGenerator invoiceGenerator)
+        public InvoiceControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IInvoiceGenerator invoiceGenerator) : base(commandProcessor, queryProcessor)
         {
-            _queryProcessor = queryProcessor;
-            _commandProcessor = commandProcessor;
             _invoiceGenerator = invoiceGenerator;
         }
 

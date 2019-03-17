@@ -5,7 +5,7 @@ using MyB2B.Web.Infrastructure.Actions.Commands;
 
 namespace MyB2B.Web.Infrastructure.ApplicationUsers.Commands
 {
-    public class CreateUserCommand : Command<ApplicationUser>
+    public class CreateUserCommand : OutputCommand<ApplicationUser>
     {
         public string Username { get; }
         public byte[] Hash { get; }

@@ -15,17 +15,13 @@ using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 
 namespace MyB2B.Web.Controllers.Logic.Authentication
 {
-    public class AuthenticationControllerLogic
+    public class AuthenticationControllerLogic : ControllerLogic
     {
-        private readonly ICommandProcessor _commandProcessor;
-        private readonly IQueryProcessor _queryProcessor;
         private readonly IApplicationUserService _applicationUserService;
         private readonly string _serverSecurityTokenSecret;
 
-        public AuthenticationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration, IApplicationUserService applicationUserService)
+        public AuthenticationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration, IApplicationUserService applicationUserService) :base(commandProcessor, queryProcessor)
         {
-            _commandProcessor = commandProcessor;
-            _queryProcessor = queryProcessor;
             _applicationUserService = applicationUserService;
             _serverSecurityTokenSecret = configuration.GetValue<string>("Security:Token:Secret");
         }

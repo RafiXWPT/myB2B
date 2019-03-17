@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
 {
-    public class CommandHandlerExceptionDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : Command
+    public class CommandHandlerExceptionDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly ICommandHandler<TCommand> _inner;
 
@@ -31,7 +31,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
         }
     }
 
-    public class AsyncCommandHandlerExceptionDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
+    public class AsyncCommandHandlerExceptionDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly IAsyncCommandHandler<TCommand> _inner;
 

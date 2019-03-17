@@ -10,6 +10,7 @@ export class CompanyDetails extends Component {
         super(props);
 
         this.state = { 
+            loading: true,
             companyName: "", 
             shortCode: "", 
             companyNip: "", 
@@ -19,6 +20,23 @@ export class CompanyDetails extends Component {
             zipCode: "", 
             street: "", 
             number: ""};
+
+        MyB2BRequest.get('api/AccountAdministration/get-user-company', (result) => {
+            if(result.IsOk) {
+                this.setState({
+                    companyName: result.value.CompanyName, 
+                    shortCode: result.value.ShortCode, 
+                    companyNip: result.value.CompanyNip, 
+                    companyRegon: result.value.CompanyRegon, 
+                    country: result.value.Country, 
+                    city: result.value.City, 
+                    zipCode: result.value.ZipCode, 
+                    street: result.value.Street, 
+                    number: result.value.Number,
+                    loading: false
+                });
+            }
+        });
     }
 
     loadSelectOptions = () => {

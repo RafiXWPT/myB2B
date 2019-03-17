@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj" />
+    <ProjectReference Include="..\MyB2B.Server.Common\MyB2B.Server.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

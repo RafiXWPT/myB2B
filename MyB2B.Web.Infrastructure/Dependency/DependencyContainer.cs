@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SimpleInjector;
+﻿using SimpleInjector;
 
 namespace MyB2B.Web.Infrastructure.Dependency
 {

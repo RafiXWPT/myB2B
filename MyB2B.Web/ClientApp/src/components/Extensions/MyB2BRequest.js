@@ -7,7 +7,7 @@ export class MyB2BRequest {
             return false;
         }
 
-        var refreshTokenResult = await fetch('api/Account/refresh-token', {
+        var refreshTokenResult = await fetch('api/Authentication/refresh-token', {
             headers: {'Authorization': 'Bearer ' + localAuthToken} 
         });
 

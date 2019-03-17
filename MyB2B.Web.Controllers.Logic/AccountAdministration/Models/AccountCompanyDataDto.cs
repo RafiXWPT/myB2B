@@ -1,6 +1,6 @@
-﻿namespace MyB2B.Web.Controllers.AccountAdministration
+﻿namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Models
 {
-    public class AccountCompanyViewModel
+    public class AccountCompanyDataDto
     {
         public string CompanyName { get; set; }
         public string ShortCode { get; set; }

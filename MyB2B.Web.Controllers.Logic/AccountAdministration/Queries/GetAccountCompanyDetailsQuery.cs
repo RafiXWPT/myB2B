@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MyB2B.Domain.Companies;
-using MyB2B.Domain.EntityFramework;
+﻿using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.Results;
-using MyB2B.Web.Infrastructure.Actions;
+using MyB2B.Web.Controllers.Logic.AccountAdministration.Models;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 
-namespace MyB2B.Web.Controllers.AccountAdministration.Queries
+namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Queries
 {
-    public class GetAccountCompanyDetailsQuery : Query<AccountCompanyViewModel>
+    public class GetAccountCompanyDetailsQuery : Query<AccountCompanyDataDto>
     {
         public int UserId { get; }
 
@@ -20,21 +15,21 @@ namespace MyB2B.Web.Controllers.AccountAdministration.Queries
         }
     }
 
-    public class GetAccountCompanyDetailsQueryHandler : QueryHandler<GetAccountCompanyDetailsQuery, AccountCompanyViewModel>
+    public class GetAccountCompanyDetailsQueryHandler : QueryHandler<GetAccountCompanyDetailsQuery, AccountCompanyDataDto>
     {
         public GetAccountCompanyDetailsQueryHandler(MyB2BContext context) : base(context)
         {
         }
 
-        public override Result<AccountCompanyViewModel> Query(GetAccountCompanyDetailsQuery query)
+        public override Result<AccountCompanyDataDto> Query(GetAccountCompanyDetailsQuery query)
         {
             var account = _context.Users.Find(query.UserId);
             if (account == null)
             {
-                return Result.Fail<AccountCompanyViewModel>("There is no user with that id.");
+                return Result.Fail<AccountCompanyDataDto>("There is no user with that id.");
             }
 
-            return Result.Ok(account.UserCompany == null ? new AccountCompanyViewModel() : new AccountCompanyViewModel
+            return Result.Ok(account.UserCompany == null ? new AccountCompanyDataDto() : new AccountCompanyDataDto
             {
                 CompanyName = account.UserCompany.Name,
                 CompanyNip = account.UserCompany.Nip,

@@ -12,21 +12,21 @@ export class TestToken extends Component {
     }
 
     testGetToken = event => {
-        MyB2BRequest.get('api/Account/get-test-token',
+        MyB2BRequest.get('api/Authentication/get-test-token',
         result => {
             console.log(result);
         });           
     }
 
     testPostToken = event => {
-        MyB2BRequest.post('api/Account/post-test-token',
+        MyB2BRequest.post('api/Authentication/post-test-token',
         JSON.stringify({data: 'X'}), result => {
             console.log(result);
         });
     }
 
     getToken = event => {
-        fetch('api/Account/authenticate', {
+        fetch('api/Authentication/authenticate', {
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username: 'token.test', password: 'token.test'})

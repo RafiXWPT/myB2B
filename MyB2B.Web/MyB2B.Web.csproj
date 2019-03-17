@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App"/>
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj"/>
     <ProjectReference Include="..\MyB2B.SampleObjects\MyB2B.SampleObjects.csproj"/>
     <ProjectReference Include="..\MyB2B.Server.Documents\MyB2B.Server.Documents.csproj"/>
+    <ProjectReference Include="..\MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj" />
     <ProjectReference Include="..\MyB2B.Web.Infrastructure\MyB2B.Web.Infrastructure.csproj"/>
   </ItemGroup>
   <ItemGroup>
@@ -42,9 +44,6 @@
     <None Update="pdfTemplate.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\AccountAdministration\Commands\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

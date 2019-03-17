@@ -17,12 +17,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
 using MyB2B.Server.Documents.Generators;
+using MyB2B.Web.Controllers.Logic.Authentication;
+using MyB2B.Web.Controllers.Logic.Invoice;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
-using MyB2B.Web.Infrastructure.Authorization;
-using MyB2B.Web.Infrastructure.Authorization.UserService;
+using MyB2B.Web.Infrastructure.ApplicationUsers;
+using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -83,7 +85,7 @@ namespace MyB2B.Web
 
         private async Task OnTokenValidatedAction(TokenValidatedContext context)
         {
-            var userService = Container.GetInstance<IUserService>();
+            var userService = Container.GetInstance<IApplicationUserService>();
             var applicationPrincipal = new ApplicationPrincipal(context.Principal);
 
             try
@@ -180,6 +182,7 @@ namespace MyB2B.Web
             RegisterQueryHandlers();
             RegisterCommandHandlers();
             RegisterServices();
+            RegisterControllersLogic();
         }
 
         private void RegisterDbContext()
@@ -231,12 +234,19 @@ namespace MyB2B.Web
 
         private void RegisterSingletons()
         {
-            Container.Register<IUserService, UserService>(Lifestyle.Singleton);
+            Container.Register<IApplicationUserService, ApplicationUserService>(Lifestyle.Singleton);
         }
 
         private void RegisterScoped()
         {
             Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
+
+        }
+
+        private void RegisterControllersLogic()
+        {
+            Container.Register<AuthenticationControllerLogic>();
+            Container.Register<InvoiceControllerLogic>();
         }
     }
 }

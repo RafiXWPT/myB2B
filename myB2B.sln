@@ -23,11 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Server.Documents", "M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Mocks", "_Mocks", "{4A7EC9F3-2CE2-4A36-A78A-2114B99F91BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.InvoiceGenerator.Console.Mock", "MyB2B.InvoiceGenerator.Console.Mock\MyB2B.InvoiceGenerator.Console.Mock.csproj", "{882E0C61-599C-4A12-AC69-85A887D077D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.InvoiceGenerator.Console.Mock", "MyB2B.InvoiceGenerator.Console.Mock\MyB2B.InvoiceGenerator.Console.Mock.csproj", "{882E0C61-599C-4A12-AC69-85A887D077D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Server.Common", "MyB2B.Server.Common\MyB2B.Server.Common.csproj", "{42DE35BA-023E-4AB9-8F13-59DCC97562CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Server.Common", "MyB2B.Server.Common\MyB2B.Server.Common.csproj", "{42DE35BA-023E-4AB9-8F13-59DCC97562CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.SampleObjects", "MyB2B.SampleObjects\MyB2B.SampleObjects.csproj", "{21AAB525-DE5B-4F8D-A45A-437A3754DD53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.SampleObjects", "MyB2B.SampleObjects\MyB2B.SampleObjects.csproj", "{21AAB525-DE5B-4F8D-A45A-437A3754DD53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Web.Controllers.Logic", "MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj", "{0907E4AC-78BD-4315-B16C-9720F73DC878}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{21AAB525-DE5B-4F8D-A45A-437A3754DD53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21AAB525-DE5B-4F8D-A45A-437A3754DD53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21AAB525-DE5B-4F8D-A45A-437A3754DD53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{882E0C61-599C-4A12-AC69-85A887D077D9} = {4A7EC9F3-2CE2-4A36-A78A-2114B99F91BF}
 		{42DE35BA-023E-4AB9-8F13-59DCC97562CE} = {20C4A59A-F7B6-4565-BEF9-BB8E2C5B4EBE}
 		{21AAB525-DE5B-4F8D-A45A-437A3754DD53} = {4A7EC9F3-2CE2-4A36-A78A-2114B99F91BF}
+		{0907E4AC-78BD-4315-B16C-9720F73DC878} = {EF1F3023-F435-4500-BC7D-E34C8ED2DF76}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DFA2260-C44D-41CD-BE11-89F703CA977B}

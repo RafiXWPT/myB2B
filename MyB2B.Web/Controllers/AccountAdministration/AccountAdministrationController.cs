@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyB2B.Domain.Results;
-using MyB2B.Web.Infrastructure.Actions.Commands;
-using MyB2B.Web.Infrastructure.Actions.Queries;
+using MyB2B.Web.Controllers.Logic.AccountAdministration.Models;
+using MyB2B.Web.Infrastructure.Controllers;
 
 namespace MyB2B.Web.Controllers.AccountAdministration
 {
@@ -10,13 +10,8 @@ namespace MyB2B.Web.Controllers.AccountAdministration
     [Route("api/[controller]")]
     public class AccountAdministrationController : BaseController
     {
-        public AccountAdministrationController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor) : base(commandProcessor, queryProcessor)
-        {
-
-        }
-
         [HttpPost("update-company")]
-        public IActionResult UpdateCompany([FromBody] AccountCompanyViewModel viewModel)
+        public IActionResult UpdateCompany([FromBody] AccountCompanyDataDto dataDto)
         {
             return GetJsonResult(Result.Ok(new {Status = "OK"}));
         }

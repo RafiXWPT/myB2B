@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Mime;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MyB2B.Web.Infrastructure.Authorization.UserService;
+using MyB2B.Server.Common;
 using MyB2B.Web.Infrastructure.Dependency;
-using SimpleInjector;
 
-namespace MyB2B.Web.Infrastructure.Authorization
+namespace MyB2B.Web.Infrastructure.ApplicationUsers
 {
     public class UserEndpointMismatchException : SecurityTokenValidationException
     {

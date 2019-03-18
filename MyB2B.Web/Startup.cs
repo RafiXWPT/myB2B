@@ -27,7 +27,11 @@ using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
+using Microsoft.Owin;
+using Owin;
+using Hangfire;
 
+[assembly: OwinStartup(typeof(MyB2B.Web.Startup))]
 namespace MyB2B.Web
 {
     public class Startup
@@ -46,6 +50,10 @@ namespace MyB2B.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             IntegrateSimpleInjector(services);
             RegisterDependencies();
+
+            services.AddHangfire(options => {
+                options.UseSqlServerStorage(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString"));
+            });
 
             var serverSecurityTokenSecret = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Security:Token:Secret"));
             services.AddAuthentication(auth =>
@@ -98,6 +106,9 @@ namespace MyB2B.Web
         {
             InitializeContainer(app);
             Container.Verify();
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
 
             if (env.IsDevelopment())
             {

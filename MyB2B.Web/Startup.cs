@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Domain.Identity;
 using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Controllers.Logic;
 using MyB2B.Web.Controllers.Logic.AccountAdministration;
@@ -159,6 +161,7 @@ namespace MyB2B.Web
         {
             Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
+            Container.RegisterSingleton<IHttpContextAccessor, HttpContextAccessor>();
             Container.RegisterInstance<IServiceProvider>(Container);
             Container.RegisterInstance<IConfiguration>(Configuration);
 
@@ -189,10 +192,13 @@ namespace MyB2B.Web
 
         private void RegisterDbContext()
         {
-            if(Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
+            Container.RegisterInstance<Func<IApplicationPrincipal>>(() =>  Container.GetInstance<IHttpContextAccessor>().HttpContext.ExtractApplicationUserInterface());
+            if (Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
                 Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase("MyB2B").Options);
             } else {
-                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>()
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
             }
             Container.Register<MyB2BContext>(Lifestyle.Scoped);
             Container.RegisterInstance<Func<MyB2BContext>>(Container.GetInstance<MyB2BContext>);

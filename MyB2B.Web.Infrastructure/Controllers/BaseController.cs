@@ -6,9 +6,6 @@ namespace MyB2B.Web.Infrastructure.Controllers
 {
     public abstract class BaseController : PrincipalController
     {
-        protected string CurrentUserEndpointAddress => ControllerContext?.HttpContext?.Request?.Host.Value;
-        protected string RequestToken => Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
-
         protected JsonResult GetJsonResult(Result result)
         {
             return result.IsFail
@@ -20,7 +17,7 @@ namespace MyB2B.Web.Infrastructure.Controllers
         {
             return result.IsFail
                 ? Json(new {success = false, errorMessage = result.Error})
-                : Json(new {success = true, result = result.Value});
+                : Json(new {success = true, data = result.Value});
         }
     }
 }

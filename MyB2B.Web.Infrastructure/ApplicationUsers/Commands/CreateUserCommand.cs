@@ -1,7 +1,9 @@
 ﻿using MyB2B.Domain.EntityFramework;
+using MyB2B.Domain.EntityFramework.Extensions;
 using MyB2B.Domain.Identity;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
+using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
 
 namespace MyB2B.Web.Infrastructure.ApplicationUsers.Commands
 {
@@ -29,10 +31,10 @@ namespace MyB2B.Web.Infrastructure.ApplicationUsers.Commands
 
         public override void Execute(CreateUserCommand command)
         {
-            var user = ApplicationUser.Create(command.Username, command.Hash, command.Salt, command.Email);
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            command.Output = Result.Ok(user);
+            ApplicationUser.Create(command.Username, command.Hash, command.Salt, command.Email)
+                .OnSuccess(user => { _context.Users.Add(user); })
+                .SaveContext(_context)
+                .FinishCommand(command);
         }
     }
 }

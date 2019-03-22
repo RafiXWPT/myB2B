@@ -16,7 +16,7 @@ namespace MyB2B.Domain.Companies
         [MaxLength(40)]
         public string CompanyNip { get; set; }
         
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
 
         public bool IsCompany => string.IsNullOrEmpty(CompanyNip);
     }

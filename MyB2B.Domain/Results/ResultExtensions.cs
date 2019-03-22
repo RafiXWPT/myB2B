@@ -172,6 +172,5 @@ namespace MyB2B.Domain.Results
 
             return result;
         }
-
     }
 }

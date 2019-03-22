@@ -7,7 +7,7 @@ namespace MyB2B.Domain.Identity
         public string Symbol { get; private set; }
         public string DisplayName { get; private set; }
 
-        public List<ApplicationRight> Rights { get; private set; }
+        public virtual List<ApplicationRight> Rights { get; private set; }
 
         public static ApplicationRole Create(string symbol, string displayName)
         {

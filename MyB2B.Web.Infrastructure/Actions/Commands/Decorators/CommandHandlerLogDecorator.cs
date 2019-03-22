@@ -2,7 +2,7 @@
 
 namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
 {
-    public class CommandHandlerLogDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : Command
+    public class CommandHandlerLogDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly ICommandHandler<TCommand> _inner;
 
@@ -24,7 +24,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
         }
     }
 
-    public class AsyncCommandHandlerLogDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
+    public class AsyncCommandHandlerLogDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly IAsyncCommandHandler<TCommand> _inner;
 

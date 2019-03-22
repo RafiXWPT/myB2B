@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MyB2B.Web.Infrastructure.Authorization.UserService
+namespace MyB2B.Web.Controllers.Logic.Authentication.Models
 {
-    public class AuthData
+    public class AuthenticationDataDto
     {
         public int UserId { get; set; }
         public string Token { get; set; }

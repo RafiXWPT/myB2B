@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
 {
-    public class CommandHandlerProfileDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : Command
+    public class CommandHandlerProfileDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly ICommandHandler<TCommand> _inner;
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -25,7 +25,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands.Decorators
         }
     }
 
-    public class AsyncCommandHandlerProfileDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : Command
+    public class AsyncCommandHandlerProfileDecorator<TCommand> : IAsyncCommandHandler<TCommand> where TCommand : CommandBase
     {
         private readonly IAsyncCommandHandler<TCommand> _inner;
         private readonly Stopwatch _stopwatch = new Stopwatch();

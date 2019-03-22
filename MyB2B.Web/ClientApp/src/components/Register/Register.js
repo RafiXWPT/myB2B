@@ -44,7 +44,7 @@ export class Register extends Component {
 
     this.setState({displaySamePasswordError: false});
     
-    fetch('api/Account/register', {
+    fetch('api/Authentication/register', {
       method: 'POST', 
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state)

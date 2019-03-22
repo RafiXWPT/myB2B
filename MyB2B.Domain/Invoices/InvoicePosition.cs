@@ -5,7 +5,7 @@ namespace MyB2B.Domain.Invoices
 {
     public class InvoicePosition : AuditableImmutableEntity
     {
-        public CompanyProduct Product { get; set; }
+        public virtual CompanyProduct Product { get; set; }
 
         public int Quantity { get; set; }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -16,13 +17,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Domain.Identity;
 using MyB2B.Server.Documents.Generators;
+using MyB2B.Web.Controllers.Logic;
+using MyB2B.Web.Controllers.Logic.AccountAdministration;
+using MyB2B.Web.Controllers.Logic.Authentication;
+using MyB2B.Web.Controllers.Logic.Invoice;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
-using MyB2B.Web.Infrastructure.Authorization;
-using MyB2B.Web.Infrastructure.Authorization.UserService;
+using MyB2B.Web.Infrastructure.ApplicationUsers;
+using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -43,7 +49,7 @@ namespace MyB2B.Web
 
         private IConfiguration Configuration { get; }
         private Container Container { get; } = DependencyContainer.Container;
-        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(Infrastructure.Actions.ActionResult<>).Assembly };
+        private Assembly[] ApplicationAssemblies { get; } = { typeof(Program).Assembly, typeof(DependencyContainer).Assembly, typeof(ControllerLogic).Assembly };
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -83,7 +89,7 @@ namespace MyB2B.Web
 
         private async Task OnTokenValidatedAction(TokenValidatedContext context)
         {
-            var userService = Container.GetInstance<IUserService>();
+            var userService = Container.GetInstance<IApplicationUserService>();
             var applicationPrincipal = new ApplicationPrincipal(context.Principal);
 
             try
@@ -155,6 +161,7 @@ namespace MyB2B.Web
         {
             Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
+            Container.RegisterSingleton<IHttpContextAccessor, HttpContextAccessor>();
             Container.RegisterInstance<IServiceProvider>(Container);
             Container.RegisterInstance<IConfiguration>(Configuration);
 
@@ -180,14 +187,18 @@ namespace MyB2B.Web
             RegisterQueryHandlers();
             RegisterCommandHandlers();
             RegisterServices();
+            RegisterControllersLogic();
         }
 
         private void RegisterDbContext()
         {
-            if(Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
-                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase().Options);
+            Container.RegisterInstance<Func<IApplicationPrincipal>>(() =>  Container.GetInstance<IHttpContextAccessor>().HttpContext.ExtractApplicationUserInterface());
+            if (Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase("MyB2B").Options);
             } else {
-                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
+                Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>()
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString")).Options);
             }
             Container.Register<MyB2BContext>(Lifestyle.Scoped);
             Container.RegisterInstance<Func<MyB2BContext>>(Container.GetInstance<MyB2BContext>);
@@ -231,12 +242,20 @@ namespace MyB2B.Web
 
         private void RegisterSingletons()
         {
-            Container.Register<IUserService, UserService>(Lifestyle.Singleton);
+            Container.Register<IApplicationUserService, ApplicationUserService>(Lifestyle.Singleton);
         }
 
         private void RegisterScoped()
         {
             Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
+
+        }
+
+        private void RegisterControllersLogic()
+        {
+            Container.Register<AuthenticationControllerLogic>();
+            Container.Register<AccountAdministrationControllerLogic>();
+            Container.Register<InvoiceControllerLogic>();
         }
     }
 }

@@ -6,11 +6,13 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.4.3"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.3" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.5.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0"/>
     <PackageReference Include="Hangfire" Version="1.6.23"/>
     <PackageReference Include="Microsoft.Owin" Version="4.0.1"/>
@@ -24,6 +26,7 @@
     <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj"/>
     <ProjectReference Include="..\MyB2B.SampleObjects\MyB2B.SampleObjects.csproj"/>
     <ProjectReference Include="..\MyB2B.Server.Documents\MyB2B.Server.Documents.csproj"/>
+    <ProjectReference Include="..\MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj" />
     <ProjectReference Include="..\MyB2B.Web.Infrastructure\MyB2B.Web.Infrastructure.csproj"/>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +46,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>

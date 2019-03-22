@@ -24,7 +24,7 @@ export class LogIn extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-      fetch('api/Account/authenticate', {
+      fetch('api/Authentication/authenticate', {
         method: 'POST', 
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(this.state)

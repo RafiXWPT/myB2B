@@ -3,7 +3,7 @@
 namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
     public abstract class CommandHandler<TCommand> : ICommandHandler<TCommand>
-        where TCommand : Command
+        where TCommand : CommandBase
     {
         protected readonly MyB2BContext _context;
 

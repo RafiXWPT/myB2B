@@ -1,0 +1,10 @@
+﻿namespace MyB2B.Web.Controllers.Logic.Authentication.Models
+{
+    public class RegisterDataDto
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+}

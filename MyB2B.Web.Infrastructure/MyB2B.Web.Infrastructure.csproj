@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyB2B.Domain.EntityFramework\MyB2B.Domain.EntityFramework.csproj" />
+    <ProjectReference Include="..\MyB2B.Server.Common\MyB2B.Server.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.4.3" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.5.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
   </ItemGroup>
 

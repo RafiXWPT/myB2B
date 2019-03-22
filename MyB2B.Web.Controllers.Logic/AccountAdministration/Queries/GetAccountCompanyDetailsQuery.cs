@@ -32,6 +32,7 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Queries
             return Result.Ok(account.UserCompany == null ? new AccountCompanyDataDto() : new AccountCompanyDataDto
             {
                 CompanyName = account.UserCompany.Name,
+                ShortCode = account.UserCompany.ShortCode,
                 CompanyNip = account.UserCompany.Nip,
                 CompanyRegon = account.UserCompany.Regon,
                 Country = account.UserCompany.Address.Country,

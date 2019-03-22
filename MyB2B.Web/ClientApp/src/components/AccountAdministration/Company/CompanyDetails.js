@@ -22,17 +22,17 @@ export class CompanyDetails extends Component {
             number: ""};
 
         MyB2BRequest.get('api/AccountAdministration/get-user-company', (result) => {
-            if(result.IsOk) {
+            if (result.success) {
                 this.setState({
-                    companyName: result.value.CompanyName, 
-                    shortCode: result.value.ShortCode, 
-                    companyNip: result.value.CompanyNip, 
-                    companyRegon: result.value.CompanyRegon, 
-                    country: result.value.Country, 
-                    city: result.value.City, 
-                    zipCode: result.value.ZipCode, 
-                    street: result.value.Street, 
-                    number: result.value.Number,
+                    companyName: result.data.companyName, 
+                    shortCode: result.data.shortCode, 
+                    companyNip: result.data.companyNip, 
+                    companyRegon: result.data.companyRegon, 
+                    country: result.data.country, 
+                    city: result.data.city, 
+                    zipCode: result.data.zipCode, 
+                    street: result.data.street, 
+                    number: result.data.number,
                     loading: false
                 });
             }

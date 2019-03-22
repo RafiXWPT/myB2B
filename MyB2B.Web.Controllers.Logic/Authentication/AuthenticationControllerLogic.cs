@@ -30,7 +30,7 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
         {
             var user = _applicationUserService.GetById(userId);
             if (user.IsFail)
-                return Result.Fail<AuthenticationDataDto>("there is no user in database");
+                return Result.Fail<AuthenticationDataDto>("there is no user in database.");
 
 
             return Result.Ok(GenerateAuthData(user.Value, userEndpoint));
@@ -43,7 +43,7 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
 
             var queryResult = _applicationUserService.GetByUsername(username);
             if (queryResult.IsFail)
-                return Result.Fail<AuthenticationDataDto>("there is no user with that username");
+                return Result.Fail<AuthenticationDataDto>("there is no user with that username.");
 
             var userFromDatabase = queryResult.Value;
 
@@ -56,18 +56,18 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
         public Result<AuthenticationDataDto> Register(string username, string email, string password, string confirmPassword, string userEndpointAddress)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
-                return Result.Fail<AuthenticationDataDto>("Form data is incorrect");
+                return Result.Fail<AuthenticationDataDto>("Form data is incorrect.");
 
             if (password != confirmPassword)
-                return Result.Fail<AuthenticationDataDto>("Passwords must be the same");
+                return Result.Fail<AuthenticationDataDto>("Passwords must be the same.");
 
             var queryResult = _applicationUserService.GetByUsername(username);
             if (queryResult.IsOk)
-                return Result.Fail<AuthenticationDataDto>("There is already user with that name");
+                return Result.Fail<AuthenticationDataDto>("There is already user with that name.");
 
             queryResult = _applicationUserService.GetByEmail(email);
             if (queryResult.IsOk)
-                return Result.Fail<AuthenticationDataDto>("There is already registered account on that e-mail");
+                return Result.Fail<AuthenticationDataDto>("There is already registered account on that e-mail.");
 
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
             var createUserResult = _applicationUserService.Create(username, hash, salt, email);

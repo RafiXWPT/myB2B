@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using MyB2B.Domain.EntityFramework;
+using MyB2B.Domain.EntityFramework.Extensions;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
+using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
 using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 
 namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Commands
@@ -52,8 +54,8 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Commands
                 .OnSuccess(company => company.UpdateNameAndShortCode(command.CompanyName, command.ShortCode))
                 .OnSuccess(company => company.UpdateNipAndRegon(command.CompanyNip, command.CompanyRegon))
                 .OnSuccess(company => company.UpdateAddress(command.Country, command.City, command.ZipCode, command.Street, command.Number))
-                .OnSuccess(_ => _context.SaveChanges())
-                .OnFailure(err => command.Output = Result.Fail(err));
+                .SaveContext(_context)
+                .FinishCommand(command);
         }
     }
 }

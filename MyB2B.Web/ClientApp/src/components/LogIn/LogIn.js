@@ -30,12 +30,12 @@ export class LogIn extends Component {
         body: JSON.stringify(this.state)
       })
       .then(response => response.json())
-      .then(data => {
-        if(data.success) {
-          AuthorizationService.LogIn(data.result.userId, data.result.token);
+      .then(result => {
+        if(result.success) {
+          AuthorizationService.LogIn(result.data.userId, result.data.token);
         } else {
           this.setState({ username: "", password: "" });
-          NotificationHelper.Instance.error(data.errorMessage);
+          NotificationHelper.Instance.error(result.errorMessage);
         }
       })
       .catch(err => console.log);

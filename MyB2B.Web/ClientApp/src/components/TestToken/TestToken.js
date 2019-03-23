@@ -32,10 +32,10 @@ export class TestToken extends Component {
             body: JSON.stringify({username: 'token.test', password: 'token.test'})
           })
           .then(response => response.json())
-          .then(data => {
-            if(data.success) {
-                localStorage.setItem('user-id', data.result.userId);
-                localStorage.setItem('auth-token', data.result.token);
+          .then(result => {
+            if(result.success) {
+                localStorage.setItem('user-id', result.data.userId);
+                localStorage.setItem('auth-token', result.data.token);
             } else {
             }
           })

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Form, Button, Col} from 'react-bootstrap';
 import { MyB2BRequest } from '../../Extensions/MyB2BRequest';
 import { NotificationManager } from 'react-notifications';
+import { Spinner } from '../../Spinner/Spinner';
+import { spinnerService } from '../../Spinner/SpinnerService';
 
 export class CompanyDetails extends Component {
     static displayName = CompanyDetails.name;
@@ -21,6 +23,7 @@ export class CompanyDetails extends Component {
             street: "", 
             number: ""};
 
+        spinnerService.show('global-spinner');
         MyB2BRequest.get('api/AccountAdministration/get-user-company', (result) => {
             if (result.success) {
                 this.setState({
@@ -35,6 +38,8 @@ export class CompanyDetails extends Component {
                     number: result.data.number,
                     loading: false
                 });
+                //After load global spinner hide.
+                //spinnerService.hide('global-spinner');
             }
         });
     }
@@ -65,6 +70,9 @@ export class CompanyDetails extends Component {
     } 
 
     render() {
+        if(this.state.loading)
+            return(<Spinner show={this.state.loading} name="test-spinner"><h1>Loading...</h1></Spinner>)
+        else
         return (
             <Form onSubmit={this.handleSubmit}>
                 <Form.Row>

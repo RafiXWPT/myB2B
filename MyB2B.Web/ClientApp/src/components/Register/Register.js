@@ -50,12 +50,12 @@ export class Register extends Component {
       body: JSON.stringify(this.state)
     })
     .then(response => response.json())
-    .then(data => {
-      if(data.success) {
+    .then(result => {
+      if(result.success) {
         NotificationManager.success("User registered");
        } else {
         this.setState({ password: "", confirmPassword: "" });
-        NotificationManager.error(data.errorMessage);
+        NotificationManager.error(result.errorMessage);
       }
     })
     .catch(err => console.log);

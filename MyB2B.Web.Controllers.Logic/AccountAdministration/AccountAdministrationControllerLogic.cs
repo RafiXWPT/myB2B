@@ -33,7 +33,7 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration
                 dataDto.ZipCode,
                 dataDto.Street,
                 dataDto.Number);
-
+            
             CommandProcessor.Execute(command);
 
             return command.Output;

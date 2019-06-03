@@ -33,15 +33,18 @@ using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
-using Microsoft.Owin;
-using Owin;
 using Hangfire;
+using System.Collections.Generic;
 
-[assembly: OwinStartup(typeof(MyB2B.Web.Startup))]
 namespace MyB2B.Web
 {
     public class Startup
     {
+        public Task OwinInitialization(IDictionary<string, object> environment)
+        {
+            return Task.CompletedTask;
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -110,6 +113,11 @@ namespace MyB2B.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseOwin(pipeline =>
+            {
+                pipeline(next => OwinInitialization);
+            });
+
             InitializeContainer(app);
             Container.Verify();
 

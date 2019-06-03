@@ -1,33 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyB2B.Domain.Results;
+using MyB2B.Web.Controllers.Logic;
 using MyB2B.Web.Controllers.Logic.AccountAdministration;
 using MyB2B.Web.Controllers.Logic.AccountAdministration.Models;
-using MyB2B.Web.Infrastructure.Controllers;
 
 namespace MyB2B.Web.Controllers.AccountAdministration
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class AccountAdministrationController : BaseController
+    public class AccountAdministrationController : LogicController<AccountAdministrationControllerLogic>
     {
-        private readonly AccountAdministrationControllerLogic _controllerLogic;
-
-        public AccountAdministrationController(AccountAdministrationControllerLogic controllerLogic)
+        public AccountAdministrationController(AccountAdministrationControllerLogic logic) : base(logic)
         {
-            _controllerLogic = controllerLogic;
         }
 
         [HttpGet("get-user-company")]
         public IActionResult GetUserCompany()
         {
-            return GetJsonResult(_controllerLogic.GetAccountCompanyData(User.UserId));
+            return GetJsonResult(Logic.GetAccountCompanyData(User.UserId));
         }
 
         [HttpPost("update-company")]
         public IActionResult UpdateCompany([FromBody] AccountCompanyDataDto dataDto)
         {
-            return GetJsonResult(_controllerLogic.UpdateCompanyData(User.UserId, dataDto));
+            return GetJsonResult(Logic.UpdateCompanyData(User.UserId, dataDto));
         }
     }
 }

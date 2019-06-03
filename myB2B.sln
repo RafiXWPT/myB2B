@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Web", "MyB2B.Web\MyB2B.Web.csproj", "{672E4550-606A-476E-B08B-873331BA25A3}"
 EndProject
@@ -29,7 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Server.Common", "MyB2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.SampleObjects", "MyB2B.SampleObjects\MyB2B.SampleObjects.csproj", "{21AAB525-DE5B-4F8D-A45A-437A3754DD53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Web.Controllers.Logic", "MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj", "{0907E4AC-78BD-4315-B16C-9720F73DC878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyB2B.Web.Controllers.Logic", "MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj", "{0907E4AC-78BD-4315-B16C-9720F73DC878}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Web.Controllers.Logic.Tests", "MyB2B.Web.Controllers.Logic.Tests\MyB2B.Web.Controllers.Logic.Tests.csproj", "{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{633FAB84-134A-4910-B83B-194239328FC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyB2B.Tests", "MyB2B.Tests\MyB2B.Tests.csproj", "{54E2806E-897F-469C-9D65-4CB4D016ACF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +83,14 @@ Global
 		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0907E4AC-78BD-4315-B16C-9720F73DC878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E2806E-897F-469C-9D65-4CB4D016ACF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E2806E-897F-469C-9D65-4CB4D016ACF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E2806E-897F-469C-9D65-4CB4D016ACF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E2806E-897F-469C-9D65-4CB4D016ACF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +106,8 @@ Global
 		{42DE35BA-023E-4AB9-8F13-59DCC97562CE} = {20C4A59A-F7B6-4565-BEF9-BB8E2C5B4EBE}
 		{21AAB525-DE5B-4F8D-A45A-437A3754DD53} = {4A7EC9F3-2CE2-4A36-A78A-2114B99F91BF}
 		{0907E4AC-78BD-4315-B16C-9720F73DC878} = {EF1F3023-F435-4500-BC7D-E34C8ED2DF76}
+		{38D1B7F8-EC55-43A8-8BEF-CEE68D5153F7} = {EF1F3023-F435-4500-BC7D-E34C8ED2DF76}
+		{54E2806E-897F-469C-9D65-4CB4D016ACF3} = {633FAB84-134A-4910-B83B-194239328FC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DFA2260-C44D-41CD-BE11-89F703CA977B}

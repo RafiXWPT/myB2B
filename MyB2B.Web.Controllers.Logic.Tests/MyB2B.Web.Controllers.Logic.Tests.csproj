@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="AccountAdministration\" />
+    <Folder Include="Invoice\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyB2B.Tests\MyB2B.Tests.csproj" />
+    <ProjectReference Include="..\MyB2B.Web.Controllers.Logic\MyB2B.Web.Controllers.Logic.csproj" />
+  </ItemGroup>
+
+</Project>

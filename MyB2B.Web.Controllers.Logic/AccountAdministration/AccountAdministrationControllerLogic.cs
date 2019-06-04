@@ -6,6 +6,7 @@ using MyB2B.Web.Controllers.Logic.AccountAdministration.Commands;
 using MyB2B.Web.Controllers.Logic.AccountAdministration.Models;
 using MyB2B.Web.Controllers.Logic.AccountAdministration.Queries;
 using MyB2B.Web.Infrastructure.Actions.Commands;
+using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 
 namespace MyB2B.Web.Controllers.Logic.AccountAdministration
@@ -23,7 +24,7 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration
 
         public Result UpdateCompanyData(int userId, AccountCompanyDataDto dataDto)
         {
-            var command = new UpdateAccountCompanyDetailsCommand(userId,
+            return CommandProcessor.Execute(new UpdateAccountCompanyDetailsCommand(userId,
                 dataDto.CompanyName,
                 dataDto.ShortCode,
                 dataDto.CompanyNip,
@@ -32,11 +33,8 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration
                 dataDto.City,
                 dataDto.ZipCode,
                 dataDto.Street,
-                dataDto.Number);
-            
-            CommandProcessor.Execute(command);
-
-            return command.Output;
+                dataDto.Number))
+                .GetCommandResult();
         }
 
         public Result UpdateProfileData(AccountProfileDataDto dataDto)

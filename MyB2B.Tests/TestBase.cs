@@ -37,7 +37,7 @@ namespace MyB2B.Tests
 
         protected MyB2BContext DbContext => Container.GetInstance<MyB2BContext>();
 
-        protected ComponentTest() : base()
+        protected ComponentTest()
         {
             Init();
             AdditionalRegistration();

@@ -5,7 +5,7 @@ using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
 
-namespace MyB2B.Web.Infrastructure.ApplicationUsers.Commands
+namespace MyB2B.Web.Controllers.Logic.Authentication.Commands
 {
     public class CreateUserCommand : OutputCommand<ApplicationUser>
     {

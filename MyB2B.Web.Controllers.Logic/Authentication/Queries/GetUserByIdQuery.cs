@@ -4,7 +4,7 @@ using MyB2B.Domain.Identity;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 
-namespace MyB2B.Web.Infrastructure.ApplicationUsers.Queries
+namespace MyB2B.Web.Controllers.Logic.Authentication.Queries
 {
     public class GetUserByIdQuery : Query<ApplicationUser>
     {

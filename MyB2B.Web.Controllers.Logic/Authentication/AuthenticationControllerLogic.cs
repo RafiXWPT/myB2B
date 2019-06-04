@@ -8,29 +8,29 @@ using Microsoft.IdentityModel.Tokens;
 using MyB2B.Domain.Identity;
 using MyB2B.Domain.Results;
 using MyB2B.Server.Common;
+using MyB2B.Web.Controllers.Logic.Authentication.Commands;
 using MyB2B.Web.Controllers.Logic.Authentication.Models;
+using MyB2B.Web.Controllers.Logic.Authentication.Queries;
 using MyB2B.Web.Infrastructure.Actions.Commands;
+using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
 using MyB2B.Web.Infrastructure.Actions.Queries;
-using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 
 namespace MyB2B.Web.Controllers.Logic.Authentication
 {
     public class AuthenticationControllerLogic : ControllerLogic
     {
-        private readonly IApplicationUserService _applicationUserService;
         private readonly string _serverSecurityTokenSecret;
 
-        public AuthenticationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration, IApplicationUserService applicationUserService) : base(commandProcessor, queryProcessor)
+        public AuthenticationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration) : base(commandProcessor, queryProcessor)
         {
-            _applicationUserService = applicationUserService;
             _serverSecurityTokenSecret = configuration.GetValue<string>("Security:Token:Secret");
         }
 
         public Result<AuthenticationDataDto> RefreshToken(int userId, string userEndpoint)
         {
-            var user = _applicationUserService.GetById(userId);
+            var user = QueryProcessor.Query(new GetUserByIdQuery(userId));
             if (user.IsFail)
-                return Result.Fail<AuthenticationDataDto>("there is no user in database.");
+                return Result.Fail<AuthenticationDataDto>("There is no user in database.");
 
 
             return Result.Ok(GenerateAuthData(user.Value, userEndpoint));
@@ -41,9 +41,9 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return Result.Fail<AuthenticationDataDto>("username or password is empty.");
 
-            var queryResult = _applicationUserService.GetByUsername(username);
+            var queryResult = QueryProcessor.Query(new GetUserByUsernameQuery(username));
             if (queryResult.IsFail)
-                return Result.Fail<AuthenticationDataDto>("there is no user with that username.");
+                return Result.Fail<AuthenticationDataDto>("There is no user with that username.");
 
             var userFromDatabase = queryResult.Value;
 
@@ -61,16 +61,25 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
             if (password != confirmPassword)
                 return Result.Fail<AuthenticationDataDto>("Passwords must be the same.");
 
-            var queryResult = _applicationUserService.GetByUsername(username);
+            var queryResult = QueryProcessor.Query(new GetUserByUsernameQuery(username));
             if (queryResult.IsOk)
                 return Result.Fail<AuthenticationDataDto>("There is already user with that name.");
 
-            queryResult = _applicationUserService.GetByEmail(email);
+            queryResult = QueryProcessor.Query(new GetUserByEmailQuery(email));
             if (queryResult.IsOk)
                 return Result.Fail<AuthenticationDataDto>("There is already registered account on that e-mail.");
 
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
-            var createUserResult = _applicationUserService.Create(username, hash, salt, email);
+
+
+            var createUserCommand = new CreateUserCommand(username, hash, salt, email);
+            CommandProcessor.Execute(createUserCommand);
+            var createUserResult = createUserCommand.Output;
+
+            var createUserResult2 = CommandProcessor.Execute(createUserCommand).GetCommandResult();
+
+
+
 
             var databaseUser = createUserResult.Value;
 

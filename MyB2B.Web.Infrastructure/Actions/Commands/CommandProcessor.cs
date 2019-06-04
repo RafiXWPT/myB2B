@@ -5,7 +5,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands
 {
     public interface ICommandProcessor
     {
-        void Execute<TCommand>(TCommand command) where TCommand: CommandBase;
+        TCommand Execute<TCommand>(TCommand command) where TCommand: CommandBase;
         Task ExecuteAsync<TCommand>(TCommand command) where TCommand : CommandBase;
     }
 
@@ -18,7 +18,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands
             _serviceProvider = serviceProvider;
         }
 
-        public void Execute<TCommand>(TCommand command) where TCommand : CommandBase
+        public TCommand Execute<TCommand>(TCommand command) where TCommand : CommandBase
         {
             var handler = _serviceProvider.GetService(typeof(ICommandHandler<TCommand>)) as ICommandHandler<TCommand>;
             if (handler == null)
@@ -27,6 +27,7 @@ namespace MyB2B.Web.Infrastructure.Actions.Commands
             }
 
             handler.Execute(command);
+            return command;
         }
 
         public async Task ExecuteAsync<TCommand>(TCommand command) where TCommand : CommandBase

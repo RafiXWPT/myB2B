@@ -28,7 +28,6 @@ using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
 using MyB2B.Web.Infrastructure.ApplicationUsers;
-using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
 using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -92,7 +91,7 @@ namespace MyB2B.Web
 
         private async Task OnTokenValidatedAction(TokenValidatedContext context)
         {
-            var userService = Container.GetInstance<IApplicationUserService>();
+            var dbContext = Container.GetInstance<MyB2BContext>();
             var applicationPrincipal = new ApplicationPrincipal(context.Principal);
 
             try
@@ -104,8 +103,8 @@ namespace MyB2B.Web
                 context.Fail("Mismatch between endpoint adressess.");
             }
 
-            var user = userService.GetById(applicationPrincipal.UserId);
-            if (user.IsFail)
+            var user = dbContext.Users.Find(applicationPrincipal.UserId);
+            if (user == null)
                 context.Fail("Not existing");
 
             await Task.CompletedTask;
@@ -250,7 +249,7 @@ namespace MyB2B.Web
 
         private void RegisterSingletons()
         {
-            Container.Register<IApplicationUserService, ApplicationUserService>(Lifestyle.Singleton);
+
         }
 
         private void RegisterScoped()

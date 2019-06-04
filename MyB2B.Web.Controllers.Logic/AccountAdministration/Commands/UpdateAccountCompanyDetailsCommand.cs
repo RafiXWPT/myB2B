@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyB2B.Domain.EntityFramework;
+﻿using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.EntityFramework.Extensions;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Extensions;
-using MyB2B.Web.Infrastructure.ApplicationUsers.Services;
+using System.Linq;
 
 namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Commands
 {
@@ -40,16 +37,18 @@ namespace MyB2B.Web.Controllers.Logic.AccountAdministration.Commands
 
     public class UpdateAccountCompanyDetailsCommandHandler : CommandHandler<UpdateAccountCompanyDetailsCommand>
     {
-        private readonly IApplicationUserService _applicationUserService;
-
-        public UpdateAccountCompanyDetailsCommandHandler(MyB2BContext context, IApplicationUserService applicationUserService) : base(context)
+        public UpdateAccountCompanyDetailsCommandHandler(MyB2BContext context) : base(context)
         {
-            _applicationUserService = applicationUserService;
         }
 
         public override void Execute(UpdateAccountCompanyDetailsCommand command)
         {
-            _applicationUserService.GetById(command.UserId)
+            var dbUser = _context.Users.Find(command.UserId);
+
+            if (dbUser == null)
+                return;
+
+            Result.Ok(dbUser)
                 .OnSuccess(user => user.UserCompany)
                 .OnSuccess(company => company.UpdateNameAndShortCode(command.CompanyName, command.ShortCode))
                 .OnSuccess(company => company.UpdateNipAndRegon(command.CompanyNip, command.CompanyRegon))

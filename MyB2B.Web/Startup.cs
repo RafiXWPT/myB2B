@@ -39,11 +39,6 @@ namespace MyB2B.Web
 {
     public class Startup
     {
-        public Task OwinInitialization(IDictionary<string, object> environment)
-        {
-            return Task.CompletedTask;
-        }
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -112,11 +107,6 @@ namespace MyB2B.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseOwin(pipeline =>
-            {
-                pipeline(next => OwinInitialization);
-            });
-
             InitializeContainer(app);
             Container.Verify();
 
@@ -260,9 +250,9 @@ namespace MyB2B.Web
 
         private void RegisterControllersLogic()
         {
-            Container.Register<AuthenticationControllerLogic>();
-            Container.Register<AccountAdministrationControllerLogic>();
-            Container.Register<InvoiceControllerLogic>();
+            Container.Register<AuthenticationLogic>();
+            Container.Register<AccountAdministrationLogic>();
+            Container.Register<InvoiceLogic>();
         }
     }
 }

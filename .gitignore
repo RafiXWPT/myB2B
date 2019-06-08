@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /myB2B.Web/ClientApp/package-lock.json
 /.vscode/*
+/MyB2B.Web/ClientApp/build/

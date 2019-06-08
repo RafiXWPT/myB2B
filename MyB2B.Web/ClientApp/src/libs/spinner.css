@@ -1,12 +1,29 @@
 .lds-roller {
     display: inline-block;
-    position: relative;
+    position: absolute;
     width: 64px;
     height: 64px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 999;
   }
   .lds-roller div {
     animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     transform-origin: 32px 32px;
+  }
+  .lds-global-roller:before {
+    content: " "; 
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    background: rgba(0,0,0,0.4); 
   }
   .lds-roller div:after {
     content: " ";

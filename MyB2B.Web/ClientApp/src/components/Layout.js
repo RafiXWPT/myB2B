@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 import { NotificationHelper } from '../NotificationHelper';
-import { Spinner } from './Spinner/Spinner';
+import { GlobalSpinner } from './Spinner/ApplicationSpinner';
 import '../libs/spinner.css';
 
 export class Layout extends Component {
@@ -12,7 +12,7 @@ export class Layout extends Component {
     return (
       <div>
         <NavMenu />
-        <Spinner name="global-spinner"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></Spinner>
+        <GlobalSpinner identifier="global-spinner"/>
         <NotificationHelper/>
         <Container>
           {this.props.children}

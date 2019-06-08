@@ -4,10 +4,12 @@ export class SpinnerService {
     }
 
     _register(spinner) {
+        console.log("spinner " + spinner.name + " registered");
         this.spinnerCache.add(spinner);
     }
 
     _unregister(spinnerToRemove) {
+        console.log("spinner " + spinnerToRemove.name + " unregistered");
         this.spinnerCache.forEach(spinner => {
             if(spinner === spinnerToRemove) {
                 this.spinnerCache.delete(spinner);
@@ -25,6 +27,14 @@ export class SpinnerService {
 
     _unregisterAll() {
         this.spinnerCache.clear();
+    }
+
+    showGlobalSpinner() {
+        return this.show('global-spinner');
+    }
+
+    hideGlobalSpinner() {
+        return this.hide('global-spinner');
     }
 
     show(spinnerName) {

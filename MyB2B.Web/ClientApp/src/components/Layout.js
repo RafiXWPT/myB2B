@@ -12,7 +12,7 @@ export class Layout extends Component {
     return (
       <div>
         <NavMenu />
-        <GlobalSpinner identifier="global-spinner"/>
+        <GlobalSpinner/>
         <NotificationHelper/>
         <Container>
           {this.props.children}

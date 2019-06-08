@@ -8,9 +8,9 @@ namespace MyB2B.Web.Controllers.AccountAdministration
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class AccountAdministrationController : LogicController<AccountAdministrationControllerLogic>
+    public class AccountAdministrationController : LogicController<AccountAdministrationLogic>
     {
-        public AccountAdministrationController(AccountAdministrationControllerLogic logic) : base(logic)
+        public AccountAdministrationController(AccountAdministrationLogic logic) : base(logic)
         {
         }
 

@@ -19,7 +19,7 @@ export class MyB2BRequest {
             if(jsonResponse.ForceTokenInvalidate) {
                  localStorage.removeItem('auth-token');
             } else if(jsonResponse.shouldRefresh) {
-                localStorage.setItem('auth-token', jsonResponse.data.authData.token);
+                localStorage.setItem('auth-token', jsonResponse.authData.token);
             }
             return true;
         }
@@ -111,7 +111,7 @@ export class MyB2BRequest {
             return false;
         }
 
-        if(response.ok == false && response.result.status == 500) {
+        if(response.ok == false && response.status == 500) {
             window.location = '/error';
             return false;
         }

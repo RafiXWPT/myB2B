@@ -25,14 +25,18 @@ namespace MyB2B.Domain.Companies
         {
             return Result.Ok(new Company
             {
+                Name = "",
+                ShortCode = "",
+                Nip = "",
+                Regon = "",
                 Address = new Address()
             });
         }
 
         public Result<Company> UpdateNameAndShortCode(string name, string shortCode)
         {
-            var cleanName = name.Trim();
-            var cleanShortCode = shortCode.Trim();
+            var cleanName = name?.Trim();
+            var cleanShortCode = shortCode?.Trim();
 
             if (string.IsNullOrEmpty(cleanName) || cleanName.Length > 255 || cleanName.Length < 3)
                 return Result.Fail<Company>("Company name length must be between 3-255 characters long.");
@@ -47,8 +51,8 @@ namespace MyB2B.Domain.Companies
 
         public Result<Company> UpdateNipAndRegon(string nip, string regon)
         {
-            var cleanNip = nip.Replace("-", "").Trim();
-            var cleanRegon = regon.Replace("-", "").Trim();
+            var cleanNip = nip?.Replace("-", "").Trim();
+            var cleanRegon = regon?.Replace("-", "").Trim();
 
             if (string.IsNullOrEmpty(cleanNip) || cleanNip.Length != 10)
                 return Result.Fail<Company>("Nip identifier must have 10 digits");

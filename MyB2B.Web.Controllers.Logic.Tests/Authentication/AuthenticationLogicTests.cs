@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace MyB2B.Web.Controllers.Logic.Tests.Authentication
 {
     [TestFixture]
-    public class AuthenticationLogicTests : LogicTest<AuthenticationControllerLogic>
+    public class AuthenticationLogicTests : LogicTest<AuthenticationLogic>
     {
         [Test, Order(1)]
         public void should_not_authenticate_if_no_user_with_that_username()

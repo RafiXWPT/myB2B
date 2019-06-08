@@ -17,11 +17,11 @@ using MyB2B.Web.Infrastructure.Actions.Queries;
 
 namespace MyB2B.Web.Controllers.Logic.Authentication
 {
-    public class AuthenticationControllerLogic : ControllerLogic
+    public class AuthenticationLogic : ControllerLogic
     {
         private readonly string _serverSecurityTokenSecret;
 
-        public AuthenticationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration) : base(commandProcessor, queryProcessor)
+        public AuthenticationLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IConfiguration configuration) : base(commandProcessor, queryProcessor)
         {
             _serverSecurityTokenSecret = configuration.GetValue<string>("Security:Token:Secret");
         }
@@ -71,15 +71,8 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
 
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
 
-
-            var createUserCommand = new CreateUserCommand(username, hash, salt, email);
-            CommandProcessor.Execute(createUserCommand);
-            var createUserResult = createUserCommand.Output;
-
-            var createUserResult2 = CommandProcessor.Execute(createUserCommand).GetCommandResult();
-
-
-
+            var createUserResult = CommandProcessor.Execute(new CreateUserCommand(username, hash, salt, email))
+                .GetCommandResult();
 
             var databaseUser = createUserResult.Value;
 

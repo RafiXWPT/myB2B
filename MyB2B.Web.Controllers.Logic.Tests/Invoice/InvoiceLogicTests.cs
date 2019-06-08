@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace MyB2B.Web.Controllers.Logic.Tests.Invoice
 {
     [TestFixture]
-    public class InvoiceLogicTests : LogicTest<InvoiceControllerLogic>
+    public class InvoiceLogicTests : LogicTest<InvoiceLogic>
     {
         protected override void AdditionalRegistration()
         {

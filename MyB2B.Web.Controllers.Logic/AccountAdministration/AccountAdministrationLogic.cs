@@ -11,9 +11,9 @@ using MyB2B.Web.Infrastructure.Actions.Queries;
 
 namespace MyB2B.Web.Controllers.Logic.AccountAdministration
 {
-    public class AccountAdministrationControllerLogic : ControllerLogic
+    public class AccountAdministrationLogic : ControllerLogic
     {
-        public AccountAdministrationControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor) : base(commandProcessor, queryProcessor)
+        public AccountAdministrationLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor) : base(commandProcessor, queryProcessor)
         {
         }
 

@@ -17,9 +17,9 @@ namespace MyB2B.Web.Controllers.Authentication
 
     [Authorize]
     [Route("api/[controller]")]
-    public class AuthenticationController : LogicController<AuthenticationControllerLogic>
+    public class AuthenticationController : LogicController<AuthenticationLogic>
     {
-        public AuthenticationController(AuthenticationControllerLogic logic) : base(logic)
+        public AuthenticationController(AuthenticationLogic logic) : base(logic)
         {
         }
 

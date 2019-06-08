@@ -11,7 +11,7 @@ using System.Text;
 namespace MyB2B.Web.Controllers.Logic.Tests.AccountAdministration
 {
     [TestFixture]
-    public class AccountAdministrationLogicTests : LogicTest<AccountAdministrationControllerLogic>
+    public class AccountAdministrationLogicTests : LogicTest<AccountAdministrationLogic>
     {
         [Test]
         public void can_get_empty_company_data()

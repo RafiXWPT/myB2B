@@ -7,9 +7,9 @@ using MyB2B.Web.Controllers.Logic.Invoice;
 namespace MyB2B.Web.Controllers.Invoice
 {
     [Route("api/[controller]")]
-    public class InvoiceController : LogicController<InvoiceControllerLogic>
+    public class InvoiceController : LogicController<InvoiceLogic>
     {
-        public InvoiceController(InvoiceControllerLogic logic) : base(logic)
+        public InvoiceController(InvoiceLogic logic) : base(logic)
         {
         }
 

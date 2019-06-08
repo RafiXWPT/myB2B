@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-import {Button, Modal, ButtonGroup} from 'react-bootstrap';
-import {EditCompany} from './Company/EditCompany';
+import {Button, ButtonGroup} from 'react-bootstrap';
 import {CompanyDetails} from './Company/CompanyDetails';
-import {EditProfile} from './Profile/EditProfile';
 import {ProfileDetails} from './Profile/ProfileDetails';
 import { SecurityDetails } from './Security/SecurityDetails';
-import { EditSecurity } from './Security/EditSecurity';
 
 export class AccountAdministration extends Component {
     static displayName = AccountAdministration.name;
@@ -13,39 +10,25 @@ export class AccountAdministration extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {currentEditTitle: '', currentDetailsComponet: <CompanyDetails/>, currentEditComponent: <EditCompany/>, showModal: false};
+        this.state = {currentDetailsComponet: <CompanyDetails/>};
     }
 
     handleSwitchToProfile = () => {
         this.setState({ 
-            currentEditTitle: 'Edit profile',
-            currentDetailsComponet: <ProfileDetails/>,
-            currentEditComponent: <EditProfile/>
+            currentDetailsComponet: <ProfileDetails/>
         });
     }
 
     handleSwitchToCompany = () => {
         this.setState({ 
-            currentEditTitle: 'Edit company',
-            currentDetailsComponet: <CompanyDetails/>,
-            currentEditComponent: <EditCompany/>
+            currentDetailsComponet: <CompanyDetails/>
         });
     }
 
     handleSwitchToSecurity = () => {
         this.setState({ 
-            currentEditTitle: 'Edit security',
-            currentDetailsComponet: <SecurityDetails/>,
-            currentEditComponent: <EditSecurity/>
+            currentDetailsComponet: <SecurityDetails/>
         });
-    }
-
-    handleOpenModal = () => {
-        this.setState({showModal: true});
-    }
-
-    handleCloseModal = () => {
-        this.setState({showModal: false});
     }
 
     render () {
@@ -53,7 +36,6 @@ export class AccountAdministration extends Component {
         <div>
             <div className="row">
             <div className="col-md-12">
-            <Button style={{margin: 5}} className="float-right" size="sm" onClick={this.handleOpenModal}>Edit</Button>
             </div>    
                 <div className="col-md-3">
                 <ButtonGroup vertical className="btn-block">
@@ -67,14 +49,6 @@ export class AccountAdministration extends Component {
                     {this.state.currentDetailsComponet}
                 </div>
             </div>
-            <Modal size="lg" show={this.state.showModal} onHide={this.handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>{this.state.currentEditTitle}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {this.state.currentEditComponent}
-            </Modal.Body>
-            </Modal>
         </div>
         );
     }

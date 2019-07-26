@@ -6,7 +6,7 @@ namespace MyB2B.Domain
     public class Address : ApplicationEntity
     {
         [MaxLength(255)]
-        public string Country { get; set; } = "";
+        public string Country { get; set; } = ""; 
 
         [MaxLength(255)]
         public string City { get; set; } = "";

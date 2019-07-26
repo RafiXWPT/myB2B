@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyB2B.Web.Controllers
+namespace MyB2B.Web.Controllers 
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller

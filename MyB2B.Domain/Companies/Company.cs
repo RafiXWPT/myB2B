@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MyB2B.Domain.Invoices;
 using MyB2B.Domain.Results;
 
 namespace MyB2B.Domain.Companies
@@ -18,6 +19,7 @@ namespace MyB2B.Domain.Companies
         public string Regon { get; set; }
 
         public virtual Address Address { get; set; }
+        public virtual List<Invoice> Invoices { get; set; }
         public virtual List<CompanyProduct> Products { get; set; }
         public virtual List<CompanyClient> Clients { get; set; }
 

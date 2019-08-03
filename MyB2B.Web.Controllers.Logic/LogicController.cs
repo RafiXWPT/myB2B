@@ -1,4 +1,5 @@
-﻿using MyB2B.Web.Infrastructure.Actions.Commands;
+﻿using MyB2B.Domain.Identity;
+using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
 using MyB2B.Web.Infrastructure.Controllers;
 
@@ -9,12 +10,18 @@ namespace MyB2B.Web.Controllers.Logic
     public abstract class ControllerLogic : IControllerLogic
     {
         protected ICommandProcessor CommandProcessor { get; }
-        protected IQueryProcessor QueryProcessor { get; }
+        protected IQueryProcessor QueryProcessor { get; }   
+        protected IApplicationPrincipal CurrentPrincipal { get; private set; }
 
         protected ControllerLogic(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
         {
             CommandProcessor = commandProcessor;
             QueryProcessor = queryProcessor;
+        }
+
+        public void SetPrincipal(IApplicationPrincipal principal)
+        {
+            CurrentPrincipal = principal;
         }
     }
 
@@ -25,6 +32,7 @@ namespace MyB2B.Web.Controllers.Logic
         protected LogicController(TLogic logic)
         {
             Logic = logic;
+            Logic.SetPrincipal(User);
         }
     }
 }

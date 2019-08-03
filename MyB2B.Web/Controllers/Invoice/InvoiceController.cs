@@ -6,6 +6,7 @@ using MyB2B.Web.Controllers.Logic.Invoice;
 
 namespace MyB2B.Web.Controllers.Invoice
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class InvoiceController : LogicController<InvoiceLogic>
     {
@@ -13,7 +14,19 @@ namespace MyB2B.Web.Controllers.Invoice
         {
         }
 
-        [Authorize]
+        [HttpGet("{id}")]
+        public IActionResult Invoice(int id)
+        {
+            return Json(Logic.GetInvoiceDetails(id));
+        }
+
+        [HttpGet("company-invoices/{id}")]
+        public IActionResult CompanyInvoices(int id)
+        {
+            return Json(Logic.GetCompanyInvoices(id));
+        }
+
+        
         [HttpPost("generate-invoice-test")]
         public IActionResult GenerateInvoiceTest(int id)
         {
@@ -21,7 +34,6 @@ namespace MyB2B.Web.Controllers.Invoice
             return Json(new {identifier = Guid.NewGuid()});
         }
 
-        [Authorize]
         [HttpGet("download-invoice-test")]
         public IActionResult DownloadInvoiceTest(int id)
         {

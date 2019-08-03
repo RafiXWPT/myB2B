@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MyB2B.Domain.Companies;
 
 namespace MyB2B.Domain.Invoices
 {
@@ -21,7 +20,7 @@ namespace MyB2B.Domain.Invoices
         public string BuyerNip { get; set; }
         public virtual Address BuyerAddress { get; set; }
 
-        public DateTime Generated { get; set; }
+        public DateTime GeneratedAt { get; set; }
 
         public InvoiceStatus Status { get; set; }
         public PaymentMethod PaymentMethod { get; set; }

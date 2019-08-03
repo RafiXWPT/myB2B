@@ -3,7 +3,6 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom';
 import {AuthorizationService} from './Services/AuthorizationService';
 import './NavMenu.css';
-import { Button } from 'react-bootstrap';
 
 export class PublicMenuItems extends Component {
   render () {
@@ -18,6 +17,9 @@ export class PublicMenuItems extends Component {
 export class PrivateMenuItems extends Component {
   render() {
     return (<React.Fragment>
+                <NavItem>
+                  <NavLink tag={Link} className="text-dark" to="/invoices">Invoices</NavLink>
+                </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/test-invoice-generator">Invoice</NavLink>
                 </NavItem>

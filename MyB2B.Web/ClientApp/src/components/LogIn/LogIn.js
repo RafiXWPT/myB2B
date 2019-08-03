@@ -32,7 +32,7 @@ export class LogIn extends Component {
       .then(response => response.json())
       .then(result => {
         if(result.success) {
-          AuthorizationService.LogIn(result.data.userId, result.data.token);
+          AuthorizationService.LogIn(result);
         } else {
           this.setState({ username: "", password: "" });
           NotificationHelper.Instance.error(result.errorMessage);

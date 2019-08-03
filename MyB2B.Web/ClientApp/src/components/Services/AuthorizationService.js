@@ -10,9 +10,10 @@ export class AuthorizationService extends Component {
         });
     }
 
-    static LogIn = (userId, token) => {
-        localStorage.setItem('user-id', userId);
-        localStorage.setItem('auth-token', token);
+    static LogIn = (loginResult) => {
+        localStorage.setItem('user-id', loginResult.data.userId);
+        localStorage.setItem('user-company-id', loginResult.data.companyId)
+        localStorage.setItem('auth-token', loginResult.data.token);
         AuthorizationService.updateAuthStatus().then(x => {
             window.location.href = '/';
         });
@@ -20,6 +21,7 @@ export class AuthorizationService extends Component {
 
     static LogOut = () => {
         localStorage.removeItem('user-id');
+        localStorage.removeItem('user-company-id')
         localStorage.removeItem('auth-token');
         localStorage.setItem('is-authenticate', false);
         NavMenu.Instance.updateAuthStatus(false);

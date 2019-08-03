@@ -48,10 +48,14 @@ namespace MyB2B.Web
             IntegrateSimpleInjector(services);
             RegisterDependencies();
 
-            services.AddHangfire(options => {
-                options.UseSqlServerStorage(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString"));
-            });
-
+            if (!Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase"))
+            {
+                services.AddHangfire(options =>
+                {
+                    options.UseSqlServerStorage(Configuration.GetValue<string>("EntityFrameworkConfiguration:ConnectionString"));
+                });
+            }
+                
             var serverSecurityTokenSecret = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Security:Token:Secret"));
             services.AddAuthentication(auth =>
             {
@@ -104,8 +108,11 @@ namespace MyB2B.Web
             InitializeContainer(app);
             Container.Verify();
 
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
+            if (!Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase"))
+            {
+                app.UseHangfireDashboard();
+                app.UseHangfireServer();
+            }
 
             if (env.IsDevelopment())
             {

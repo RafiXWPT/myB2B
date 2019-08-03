@@ -17,13 +17,13 @@ namespace MyB2B.Web.Controllers.Invoice
         [HttpGet("{id}")]
         public IActionResult Invoice(int id)
         {
-            return Json(Logic.GetInvoiceDetails(id));
+            return GetJsonResult(Logic.GetInvoiceDetails(id));
         }
 
         [HttpGet("company-invoices/{id}")]
         public IActionResult CompanyInvoices(int id)
         {
-            return Json(Logic.GetCompanyInvoices(id));
+            return GetJsonResult(Logic.GetCompanyInvoices(id));
         }
 
         
@@ -37,8 +37,8 @@ namespace MyB2B.Web.Controllers.Invoice
         [HttpGet("download-invoice-test")]
         public IActionResult DownloadInvoiceTest(int id)
         {
-            var invoice = Logic.DownloadInvoice(id);
-            return File(invoice.InvoiceContent, "application/pdf", $"{invoice.InvoiceNumber}.pdf");
+            var invoiceFile = Logic.DownloadInvoice(id);
+            return File(invoiceFile.FileContent, invoiceFile.FileType, invoiceFile.FileName);
         }
     }
 }

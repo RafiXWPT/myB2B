@@ -1,4 +1,5 @@
-﻿using MyB2B.Domain.EntityFramework;
+﻿using Microsoft.EntityFrameworkCore;
+using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.Results;
 using MyB2B.Web.Controllers.Logic.Invoice.Models;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -25,7 +26,7 @@ namespace MyB2B.Web.Controllers.Logic.Invoice.Queries
 
         public override Result<List<CompanyInvoiceListDto>> Query(GetCompanyInvoicesQuery query)
         {
-            var company = _context.Companies.First(c => c.Id == query.CompanyId);
+            var company = _context.Companies.Include(c => c.Invoices).First(c => c.Id == query.CompanyId);
             var companyInvoices = company.Invoices.Select(i => new CompanyInvoiceListDto
             {
                 Id = i.Id,

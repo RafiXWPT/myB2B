@@ -21,6 +21,9 @@ export class PrivateMenuItems extends Component {
                   <NavLink tag={Link} className="text-dark" to="/invoices">Invoices</NavLink>
                 </NavItem>
                 <NavItem>
+                  <NavLink tag={Link} className="text-dark" to="/products">Products</NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/test-invoice-generator">Invoice</NavLink>
                 </NavItem>
                 <NavItem>

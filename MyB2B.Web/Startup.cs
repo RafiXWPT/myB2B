@@ -1,5 +1,4 @@
 using System;
-using System.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -9,8 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,9 +17,6 @@ using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.Identity;
 using MyB2B.Server.Documents.Generators;
 using MyB2B.Web.Controllers.Logic;
-using MyB2B.Web.Controllers.Logic.AccountAdministration;
-using MyB2B.Web.Controllers.Logic.Authentication;
-using MyB2B.Web.Controllers.Logic.Invoice;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Commands.Decorators;
 using MyB2B.Web.Infrastructure.Actions.Queries;
@@ -30,10 +24,10 @@ using MyB2B.Web.Infrastructure.Actions.Queries.Decorators;
 using MyB2B.Web.Infrastructure.ApplicationUsers;
 using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
-using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 using Hangfire;
-using System.Collections.Generic;
+using System.Linq;
+using MyB2B.Web.Controllers.Logic.Authentication;
 
 namespace MyB2B.Web
 {
@@ -152,20 +146,30 @@ namespace MyB2B.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+#if DEBUG
+            using(AsyncScopedLifestyle.BeginScope(Container))
+            {
+                var authenticationLogic = Container.GetInstance<AuthenticationLogic>();
+                authenticationLogic.Register("rafal.palej", "rafal.palej@rpalej.pl", "rafal.palej", "rafal.palej", "127.0.0.1");
+            }
+#endif
         }
 
         private void IntegrateSimpleInjector(IServiceCollection services)
         {
             Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
+            services.AddSimpleInjector(Container, options => options
+                .AddAspNetCore()
+                .AddControllerActivation()
+                .AddViewComponentActivation()
+                .AddPageModelActivation()
+                .AddTagHelperActivation());
+
             Container.RegisterSingleton<IHttpContextAccessor, HttpContextAccessor>();
             Container.RegisterInstance<IServiceProvider>(Container);
-            Container.RegisterInstance<IConfiguration>(Configuration);
-
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(Container));
-            services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(Container));
+            Container.RegisterInstance(Configuration);
 
             services.EnableSimpleInjectorCrossWiring(Container);
             services.UseSimpleInjectorAspNetRequestScoping(Container);
@@ -173,8 +177,6 @@ namespace MyB2B.Web
 
         private void InitializeContainer(IApplicationBuilder app)
         {
-            Container.RegisterMvcControllers(app);
-            Container.RegisterMvcViewComponents(app);
             Container.AutoCrossWireAspNetComponents(app);
         }
 
@@ -189,7 +191,7 @@ namespace MyB2B.Web
 
         private void RegisterDbContext()
         {
-            Container.RegisterInstance<Func<IApplicationPrincipal>>(() =>  Container.GetInstance<IHttpContextAccessor>().HttpContext.ExtractApplicationUserInterface());
+            Container.RegisterInstance<Func<IApplicationPrincipal>>(() =>  Container.GetInstance<IHttpContextAccessor>().HttpContext.ExtractApplicationPrincipalInterface());
             if (Configuration.GetValue<bool>("EntityFrameworkConfiguration:InMemoryDatabase")) {
                 Container.RegisterInstance(new DbContextOptionsBuilder<MyB2BContext>().UseInMemoryDatabase("MyB2B").Options);
             } else {
@@ -233,26 +235,22 @@ namespace MyB2B.Web
 
         private void RegisterServices()
         {
-            RegisterSingletons();
             RegisterScoped();
-        }
-
-        private void RegisterSingletons()
-        {
-
         }
 
         private void RegisterScoped()
         {
             Container.Register<IInvoiceGenerator, PdfInvoiceGenerator>();
-
         }
 
         private void RegisterControllersLogic()
         {
-            Container.Register<AuthenticationLogic>();
-            Container.Register<AccountAdministrationLogic>();
-            Container.Register<InvoiceLogic>();
+            var logicAssembly = typeof(IControllerLogic).Assembly;
+            var logicImplementations = logicAssembly.GetExportedTypes().Where(t => typeof(IControllerLogic).IsAssignableFrom(t) && !t.IsAbstract).ToList();
+            foreach (var logicImplementation in logicImplementations)
+            {
+                Container.Register(logicImplementation);
+            }
         }
     }
 }

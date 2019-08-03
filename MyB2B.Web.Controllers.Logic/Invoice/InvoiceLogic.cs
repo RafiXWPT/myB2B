@@ -47,9 +47,9 @@ namespace MyB2B.Web.Controllers.Logic.Invoice
             FakeInvoiceDb.GeneratedInvoice = _invoiceGenerator.Generate(invoice);
         }
 
-        public InvoiceDto DownloadInvoice(int invoiceId)
+        public InvoiceFileDto DownloadInvoice(int invoiceId)
         {
-            return new InvoiceDto {InvoiceNumber = "test_invoice", InvoiceContent = FakeInvoiceDb.GeneratedInvoice};
+            return new InvoiceFileDto {FileName = "test_invoice.pdf", FileContent = FakeInvoiceDb.GeneratedInvoice, FileType = "application/pdf"};
         }
     }
 }

@@ -13,7 +13,7 @@ namespace MyB2B.SampleObjects
         {
             Number = "0001/RP/SQS/03/2019",
             Template = string.IsNullOrEmpty(templatePath) ? null : System.IO.File.ReadAllBytes(templatePath),
-            Generated = DateTime.Now,
+            GeneratedAt = DateTime.Now,
             CreatedAt = DateTime.Now,
 
             DealerName = "Jan Nowak",

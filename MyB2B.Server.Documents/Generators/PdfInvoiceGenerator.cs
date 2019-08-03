@@ -51,7 +51,7 @@ namespace MyB2B.Server.Documents.Generators
                 .SetTextAlignment(TextAlignment.CENTER));
 
             var documentDatesParagraph = new Paragraph().SetPadding(0).SetMargin(0).SetTextAlignment(TextAlignment.RIGHT).SetFontSize(10);
-            documentDatesParagraph.Add($"Data wystawienia dokumentu: {invoice.Generated:yyyy-MM-dd}");
+            documentDatesParagraph.Add($"Data wystawienia dokumentu: {invoice.GeneratedAt:yyyy-MM-dd}");
             documentDatesParagraph.AddNewLine($"Data wykonania usługi: {invoice.CreatedAt:yyyy-MM-dd}");
 
             _currentDocument.Add(documentDatesParagraph);

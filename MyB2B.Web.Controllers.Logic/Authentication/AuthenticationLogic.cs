@@ -89,6 +89,7 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
             return new AuthenticationDataDto
             {
                 UserId = user.Id,
+                CompanyId = user.UserCompany.Id,
                 Token = tokenHandler.WriteToken(token),
                 ValidFrom = token.ValidFrom,
                 ValidTo = token.ValidTo
@@ -135,7 +136,8 @@ namespace MyB2B.Web.Controllers.Logic.Authentication
                 {
                     CreateClaim(ApplicationClaimType.UserId, user.Id),
                     CreateClaim(ApplicationClaimType.UserEndpointAddress, userEndpoint),
-                    CreateClaim(ApplicationClaimType.UserCompanyName, "-"),
+                    CreateClaim(ApplicationClaimType.UserCompanyId, user.UserCompany.Id),
+                    CreateClaim(ApplicationClaimType.UserCompanyName, user.UserCompany.Name),
                     CreateClaim(ApplicationClaimType.UserLastLoginDate, DateTime.Now.AddHours(-1)),
                     CreateClaim(ApplicationClaimType.UserIsConfirmed, user.Status == UserStatus.Verified)
                 }),

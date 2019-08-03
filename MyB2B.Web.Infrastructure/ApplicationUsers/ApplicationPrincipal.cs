@@ -77,9 +77,9 @@ namespace MyB2B.Web.Infrastructure.ApplicationUsers
 
     public static class ApplicationPrincipalExtensions
     {
-        public static IApplicationPrincipal ExtractApplicationUserInterface(this IPrincipal principal) => ExtractApplicationPrincipal(principal);
-        public static IApplicationPrincipal ExtractApplicationUserInterface(this IIdentity identity) => ExtractApplicationPrincipal(identity);
-        public static IApplicationPrincipal ExtractApplicationUserInterface(this HttpContext currentContext) => ExtractApplicationPrincipal(currentContext);
+        public static IApplicationPrincipal ExtractApplicationPrincipalInterface(this IPrincipal principal) => ExtractApplicationPrincipal(principal);
+        public static IApplicationPrincipal ExtractApplicationPrincipalInterface(this IIdentity identity) => ExtractApplicationPrincipal(identity);
+        public static IApplicationPrincipal ExtractApplicationPrincipalInterface(this HttpContext currentContext) => ExtractApplicationPrincipal(currentContext);
 
         public static ApplicationPrincipal ExtractApplicationPrincipal(this IPrincipal principal) => new ApplicationPrincipal(principal);
         public static ApplicationPrincipal ExtractApplicationPrincipal(this IIdentity identity) => new ApplicationPrincipal(identity);
@@ -87,8 +87,7 @@ namespace MyB2B.Web.Infrastructure.ApplicationUsers
         {
             var bearerToken = currentContext.GetAuthorizationTokenFromRequest();
             return bearerToken == null ? 
-                ApplicationPrincipal.GuestPrincipal() 
-                : 
+                ApplicationPrincipal.GuestPrincipal() : 
                 SecurityTokenPrincipalExtractor.ExtractFromToken(bearerToken, out _);
         }
     }

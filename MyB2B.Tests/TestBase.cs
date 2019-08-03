@@ -1,26 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
-using Moq;
 using MyB2B.Domain;
 using MyB2B.Domain.EntityFramework;
 using MyB2B.Domain.Identity;
 using MyB2B.Web.Infrastructure.Actions.Commands;
 using MyB2B.Web.Infrastructure.Actions.Queries;
-using MyB2B.Web.Infrastructure.Dependency;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace MyB2B.Tests
 {
     public class InMemoryPrincipal : IApplicationPrincipal
     {
         public int UserId => 0;
+
+        public int CompanyId => 0;
 
         public string FirstName => "Application";
 

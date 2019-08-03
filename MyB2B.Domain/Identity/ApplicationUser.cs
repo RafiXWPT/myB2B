@@ -15,6 +15,7 @@ namespace MyB2B.Domain.Identity
     public interface IApplicationPrincipal
     {
         int UserId { get; }
+        int CompanyId { get; }
         string FirstName { get; }
         string LastName { get; }
         bool IsConfirmed { get; }

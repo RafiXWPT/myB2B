@@ -25,6 +25,7 @@ namespace MyB2B.Web.Infrastructure.ApplicationUsers
         public ApplicationPrincipal(IIdentity identity) : base(identity) { }
 
         public int UserId => Convert.ToInt32(GetClaimValueOrDefault(ApplicationClaimType.UserId, "-1"));
+        public int CompanyId => Convert.ToInt32(GetClaimValueOrDefault(ApplicationClaimType.UserCompanyId, "-1"));
         public string FirstName => GetClaimValueOrDefault(ApplicationClaimType.UserFirstName, "Guest");
         public string LastName => GetClaimValueOrDefault(ApplicationClaimType.UserLastName, "Guest");
         public bool IsConfirmed => Convert.ToBoolean(GetClaimValueOrDefault(ApplicationClaimType.UserIsConfirmed, "false"));
